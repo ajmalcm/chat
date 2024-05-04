@@ -10,7 +10,6 @@ const Group=lazy(()=>import("./pages/Group"));
 const App = () => {
   return (
     <Router>
-    <h1>Hello world</h1>
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/chat/:chatId' element={<Chat/>}/>
