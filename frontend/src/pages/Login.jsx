@@ -3,7 +3,7 @@ import { Avatar, Button, Container, IconButton, Paper, Stack, TextField, Typogra
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import {isValidUsername, useFileHandler, useInputValidation} from "6pp";
 import { useState } from "react";
-import VisualyHidden from "../styled/StyledComponents";
+import VisualyHidden from "../components/styled/StyledComponents";
 import { userNameValidator } from "../utils/Validation";
 
 const Login = () => {
@@ -16,7 +16,7 @@ const Login = () => {
   // const registerChangeHandler=(e)=>{setRegisterData({...registerData,[e.target.name]:e.target.value})}
 
   const name=useInputValidation("");
-  const password=useInputValidation();
+  const password=useInputValidation(); 
   const bio=useInputValidation("");
   const userName=useInputValidation("",userNameValidator);
   const avatar=useFileHandler("single");
