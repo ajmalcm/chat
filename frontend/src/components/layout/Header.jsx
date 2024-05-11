@@ -1,11 +1,47 @@
-import { AppBar, Box, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
+import { AppBar, Backdrop, Box, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from '@mui/icons-material/Add';
 import GroupIcon from '@mui/icons-material/Group';
-import React from "react";
+import React,{Suspense,lazy, useState} from "react";
+import { useNavigate } from "react-router-dom";
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const Header = () => {
+  const navigate=useNavigate();
+  const [isMobile,setIsMobile]=useState(false);
+  const [isSearch,setIsSearch]=useState(false);
+  const [isNewGroup,setIsNewGroup]=useState(false);
+  const [isNotification,setIsNotification]=useState(false);
+
+  const Notifications=lazy(()=>import("../../specific/Notifications"));
+  const SearchDialog=lazy(()=>import("../../specific/Search"));
+  const NewGroup=lazy(()=>import("../../specific/NewGroup"));
+
+
+  const handleMobile=()=>{
+    setIsMobile(prev=>!prev)
+  }
+
+  const openSearch=()=>{
+    setIsSearch(prev=>!prev)
+  }
+
+  const openNewGroup=()=>{
+    setIsNewGroup(prev=>!prev)
+    
+  }
+
+  const openNotification=()=>{
+    setIsNotification(prev=>!prev)
+  }
+
+
+  const navigateToGroup=()=>{
+    console.log("groups")
+    navigate("/groups")
+  }
+
   return (
     <>
       <Box sx={{ flexGrow: 1, height: "4rem" }}>
@@ -18,36 +54,77 @@ const Header = () => {
               Realtime
             </Typography>
             <Box sx={{ display: { xs: "block", sm: "none" } }}>
-              <IconButton size="large" color="inherit">
-                <MenuIcon />
+              <IconButton size="large" color="inherit" onClick={handleMobile}>
+                <MenuIcon/>
               </IconButton>
             </Box>
             <Box sx={{ flexGrow: 1 }} />
             <Box>
-            <Tooltip title="Search">
-              <IconButton size="large" color="inherit">
-                <SearchIcon />
-              </IconButton>
-            </Tooltip>
+            <IconBtn
+              title="Search"
+              icon={<SearchIcon/>}
+              handler={openSearch}
+            />
 
-            <Tooltip title="Create new group">
-            <IconButton size="large" color="inherit">
-                <AddIcon/>
-              </IconButton>
-            </Tooltip>
+            <IconBtn
+              title="New Group"
+              icon={<GroupIcon/>}
+              handler={openNewGroup}
+            />
 
-            <Tooltip title="Manage Groups">
-            <IconButton size="large" color="inherit">
-                <GroupIcon/>
-              </IconButton>
-            </Tooltip>
+            <IconBtn
+              title="Manage Groups"
+              icon={<AddIcon/>}
+              handler={navigateToGroup}
+            />
+            <IconBtn
+              title="Notifications"
+              icon={<NotificationsIcon/>}
+              handler={openNotification}
+            />
 
             </Box>
           </Toolbar>
         </AppBar>
       </Box>
+
+    {
+      isSearch&&(
+        <Suspense fallback={<Backdrop open/>}>
+          <SearchDialog/>
+        </Suspense>
+      )
+    }
+    {
+      isNotification&&(
+        <Suspense fallback={<Backdrop open/>}>
+          <Notifications/>
+        </Suspense>
+      )
+    }
+    {
+      isNewGroup&&(
+        <Suspense fallback={<Backdrop open/>}>
+          <NewGroup/>
+        </Suspense>
+      )
+    }
+
+
+    
+
     </>
   );
 };
+
+const IconBtn=({title,icon,handler})=>{
+  return(
+    <Tooltip title={title}>
+    <IconButton onClick={handler} size="large" color="inherit">
+      {icon}
+    </IconButton>
+    </Tooltip>
+  )
+}
 
 export default Header;
