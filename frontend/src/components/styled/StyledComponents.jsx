@@ -19,7 +19,7 @@ export const Link=styled(LinkComponent)({
     color:"black",
     padding:"1rem",
     ":hover":{
-        backgroundColor:"#F0F0F0"
+        backgroundColor:"rgba(0,0,0,0.1)"
     }
 })
 
