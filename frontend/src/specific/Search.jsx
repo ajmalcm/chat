@@ -3,8 +3,6 @@ import {
   DialogTitle,
   InputAdornment,
   List,
-  ListItem,
-  ListItemText,
   Stack,
   TextField,
 } from "@mui/material";
@@ -41,9 +39,7 @@ const Search = () => {
             {/* if some error happens it may be becouse im not providing objeects inside the users it is a todo" */}
           {
             users.map((user) => (
-            <ListItem>
               <UserItem user={user} />
-            </ListItem>
           ))}
         </List>
       </Stack>
