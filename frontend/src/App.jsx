@@ -1,5 +1,5 @@
 import React,{Suspense, lazy} from 'react'
-import {BrowserRouter as Router,Routes,Route, BrowserRouter} from "react-router-dom";
+import {BrowserRouter as Router,Routes,Route} from "react-router-dom";
 import ProtectedRoute from './components/styled/auth/ProtectedRoute';
 import LayoutLoader from './components/layout/Loaders';
 const Home=lazy(()=>import("./pages/Home"));  //we use lazy function for dynmaic routing which is loaded only when its needed

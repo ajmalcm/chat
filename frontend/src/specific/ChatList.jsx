@@ -10,7 +10,6 @@ const ChatList = (
 handleDeleteChat
 }) => {
 
-  console.log(chats)
 
   return (
     <Stack width={w} direction={"column"}>
