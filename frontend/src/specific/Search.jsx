@@ -6,15 +6,21 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useInputValidation } from "6pp";
 import SearchIcon from "@mui/icons-material/Search";
 import UserItem from "../components/shared/UserItem";
+import { sampleUsers } from "../constants/sampleData";
 
 const Search = () => {
   const search = useInputValidation();
 
-  const users = ["user1", "user2", "user3", "user4"];
+  const [users,setUsers] = useState(sampleUsers);
+  let isLoadingFriendRequest=false;
+
+  const addFriendHandler=(id)=>{
+    console.log(id)
+  }
 
   return (
     <Dialog open>
@@ -39,7 +45,7 @@ const Search = () => {
             {/* if some error happens it may be becouse im not providing objeects inside the users it is a todo" */}
           {
             users.map((user) => (
-              <UserItem user={user} />
+              <UserItem user={user} key={user._id} handler={addFriendHandler} handlerIsLoading={isLoadingFriendRequest}/>
           ))}
         </List>
       </Stack>

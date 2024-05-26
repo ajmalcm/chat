@@ -1,8 +1,9 @@
 import { Avatar, IconButton, ListItem, Stack, Typography } from "@mui/material";
 import React from "react";
 import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from '@mui/icons-material/Remove';
 
-const UserItem = ({ user, handler, handlerIsLoading }) => {
+const UserItem = ({ user, handler, handlerIsLoading,isAdded=false }) => {
   const { name, _id, avatar } = user;
 
   return (
@@ -23,6 +24,7 @@ const UserItem = ({ user, handler, handlerIsLoading }) => {
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
             textOverflow: "ellipsis",
+            width:"100%"
           }}
         >
           {name}
@@ -30,16 +32,19 @@ const UserItem = ({ user, handler, handlerIsLoading }) => {
         <IconButton
           size="small"
           sx={{
-            bgcolor: "primary.main",
+            bgcolor: isAdded?"error.main":"primary.main",
             color: "white",
             "&hover": {
-              bgcolor: "primary.dark",
+              bgcolor:isAdded?"error.dark": "primary.dark",
             },
           }}
           onClick={() => handler(_id)}
           disabled={handlerIsLoading}
         >
-          <AddIcon />
+        {
+          isAdded?<RemoveIcon/>: <AddIcon />
+        }
+         
         </IconButton>
       </Stack>
     </ListItem>

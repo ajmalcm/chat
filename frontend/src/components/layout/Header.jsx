@@ -6,6 +6,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import React,{Suspense,lazy, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Header = () => {
   const navigate=useNavigate();
@@ -42,6 +43,10 @@ const Header = () => {
     navigate("/groups")
   }
 
+  const logOutHandler=()=>{
+    console.log("logout")
+  }
+
   return (
     <>
       <Box sx={{ flexGrow: 1, height: "4rem" }}>
@@ -68,19 +73,24 @@ const Header = () => {
 
             <IconBtn
               title="New Group"
-              icon={<GroupIcon/>}
+              icon={<AddIcon/>}
               handler={openNewGroup}
             />
 
             <IconBtn
               title="Manage Groups"
-              icon={<AddIcon/>}
+              icon={<GroupIcon/>}
               handler={navigateToGroup}
             />
             <IconBtn
               title="Notifications"
               icon={<NotificationsIcon/>}
               handler={openNotification}
+            />
+            <IconBtn
+              title="Logout"
+              icon={<LogoutIcon/>}
+              handler={logOutHandler}
             />
 
             </Box>
