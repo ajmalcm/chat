@@ -5,9 +5,17 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import SendIcon from "@mui/icons-material/Send";
 import { Form } from "react-router-dom";
 import { InputBox } from "../components/styled/StyledComponents";
+import { FileMenu } from "../components/dialog/FileMenu";
+import { sampleMessage } from "../constants/sampleData";
+import MessageComponent from "../components/shared/MessageComponent";
 
 const Chat = () => {
   const containerRef = useRef(null);
+
+  const user={
+    _id:"ajaksla",
+    name:"sandySemicolon"
+  }
 
   return (
     <>
@@ -22,7 +30,15 @@ const Chat = () => {
           overflowY: "auto",
         }}
         bgcolor={"#EAEAEA"}
-      ></Stack>
+      >
+
+        {
+          sampleMessage.map((i)=>(
+            <MessageComponent message={i} user={user}/>
+          ))
+        }
+
+      </Stack>
       <form
         style={{
           height: "10%",
@@ -52,6 +68,9 @@ const Chat = () => {
           </IconButton>
         </Stack>
       </form>
+
+            <FileMenu/>
+
     </>
   );
 };
