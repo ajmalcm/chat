@@ -6,9 +6,9 @@ import { useInputValidation } from '6pp'
 
 const NewGroup = () => {
   
+  const groupName=useInputValidation();
   const [members,setMembers]=useState(sampleUsers);
   const [selectedMembers,setSelectedMembers]=useState([]);
-  const groupName=useInputValidation();
 
   const selectMemberHandler=(id)=>{
     setSelectedMembers(prev=>(prev.includes(id)?prev.filter((currentElement)=>currentElement!==id):[...prev,id]))
