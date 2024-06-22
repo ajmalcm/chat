@@ -8,12 +8,6 @@ import { userNameValidator } from "../utils/Validation";
 
 const Login = () => {
   const [isLogin, setisLogin] = useState(true);
-  // const [loginData,setLoginData]=useState({userName:"",password:""});
-  // const [registerData,setRegisterData]=useState({name:"",uname:"",pass:"",bio:""})
-  // const {userName,password}=loginData;
-  // const {name,uname,pass,bio}=registerData;
-  // const loginChangeHandler=(e)=>{setLoginData({...loginData,[e.target.name]:e.target.value})}
-  // const registerChangeHandler=(e)=>{setRegisterData({...registerData,[e.target.name]:e.target.value})}
 
   const name=useInputValidation("");
   const password=useInputValidation(); 
