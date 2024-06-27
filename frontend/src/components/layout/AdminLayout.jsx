@@ -1,20 +1,76 @@
-import React, { useState } from "react";
-import { Grid, Box, IconButton, Drawer, Stack, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Grid,
+  Box,
+  IconButton,
+  Drawer,
+  Stack,
+  Typography,
+  styled,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Link as LinkComponent } from "react-router-dom";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import MessageIcon from "@mui/icons-material/Message";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+
+const Link = styled(LinkComponent)({
+  textDecoration: "none",
+  borderRadius: "2rem",
+  padding: "1rem 2rem",
+  color: "black",
+  ":hover": {
+    color: "rgba(0,0,0,0.54)",
+  },
+});
+
+const adminTabs = [
+  {
+    name: "Dashboard",
+    path: "/admin/dashboard",
+    icon: <DashboardIcon />,
+  },
+  {
+    name: "Users",
+    path: "/admin/users-management",
+    icon: <ManageAccountsIcon />,
+  },
+  {
+    name: "Chats",
+    path: "/admin/chats-management",
+    icon: <GroupOutlinedIcon />,
+  },
+  {
+    name: "Messages",
+    path: "/admin/messages",
+    icon: <MessageIcon />,
+  },
+];
 
 const AdminLayout = ({ children }) => {
   const [isMobile, setIsMobile] = useState(false);
+  const isAdmin=true;
+  const navigate=useNavigate();
 
   const handleMobile = () => {
     setIsMobile(!isMobile);
   };
 
-  const handleClose=()=>
-    {
-        setIsMobile(false)
-    }
+  const handleClose = () => {
+    setIsMobile(false);
+  };
+
+
+  useEffect(()=>{
+    if(!isAdmin)
+      {
+        navigate("/admin")
+      }
+   },[isAdmin])
 
   return (
     <Grid container minHeight={"100vh"}>
@@ -50,24 +106,52 @@ const AdminLayout = ({ children }) => {
       </Grid>
 
       <Drawer open={isMobile} onClose={handleClose}>
-        <Sidebar w="50vw"/>
+        <Sidebar w="50vw" />
       </Drawer>
     </Grid>
   );
 };
 
-const Sidebar = ({w="100%"}) => {
+const Sidebar = ({ w = "100%" }) => {
+  const location = useLocation();
 
-    const location=useLocation();
+  const logoutHandler = () => {};
 
   return (
     <Stack width={w} direction={"column"} p={"3rem"} spacing={"3rem"}>
-<Typography variant="h5" textTransform={"uppercase"}>
-realtime
-</Typography>
+      <Typography variant="h5" textTransform={"uppercase"}>
+        realtime
+      </Typography>
 
+      <Stack spacing={"1rem"}>
+        {adminTabs.map((tab) => (
+          <Link
+            key={tab.path}
+            to={tab.path}
+            sx={
+              location.pathname === tab.path && {
+                bgcolor: "black",
+                color: "white",
+                ":hover": {
+                  color: "white",
+                },
+              }
+            }
+          >
+            <Stack direction={"row"} alignItems={"center"} spacing={"1rem"}>
+              {tab.icon}
+              <Typography>{tab.name}</Typography>
+            </Stack>
+          </Link>
+        ))}
 
-
+        <Link onClick={logoutHandler}>
+            <Stack direction={"row"} alignItems={"center"} spacing={"1rem"}>
+              <ExitToAppIcon/>
+              <Typography>Logout</Typography>
+            </Stack>
+          </Link>
+      </Stack>
     </Stack>
   );
 };
