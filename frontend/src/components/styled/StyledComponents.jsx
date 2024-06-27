@@ -32,4 +32,18 @@ export const InputBox = styled("input")({
   backgroundColor: "#EAEAEA",
 });
 
+export const SearchField=styled("input")({
+  padding:"1rem 2rem",
+  width:"20vmax",
+  border:"none",
+  outline:"none",
+  borderRadius:"1.5rem",
+  backgroundColor:"#f5f5f5",
+  fontSize:"1.1rem"
+})
+
+export const CurveButton=styled("button")({
+  
+})
+
 export default VisualyHidden;
