@@ -43,7 +43,17 @@ export const SearchField=styled("input")({
 })
 
 export const CurveButton=styled("button")({
-  
+  borderRadius:"1rem",
+  padding:"1rem 2rem",
+  border:"none",
+  outline:"none",
+  cursor:"pointer",
+  backgroundColor:"black",
+  color:"white",
+  fontSize:"1.1rem",
+  ":hover":{
+    backgroundColor:"rgba(0,0,0,0.8)"
+  }
 })
 
 export default VisualyHidden;
