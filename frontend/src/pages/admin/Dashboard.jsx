@@ -11,6 +11,7 @@ import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
 import moment from "moment";
+import { DoughnutChart, LineChart } from "../../specific/Charts";
 
 const Dashboard = () => {
   const Appbar = (
@@ -53,19 +54,21 @@ const Dashboard = () => {
     <AdminLayout>
       <Container component={"main"}>
         {Appbar}
-        <Stack direction={"row"} spacing={"2rem"} flexWrap={"wrap"}>
+        <Stack direction={{xs:"column",lg:"row"}} sx={{gap:"2rem"}} flexWrap={"wrap"} justifyContent={"center"} alignItems={{xs:"center",lg:"stretch"}}>
           <Paper
             elevation={3}
             sx={{
               padding: "2rem 3.5rem",
               borderRadius: "1rem",
-              width: "100%",
-              maxWidth: "45rem",
-              height: "25rem",
+              // width: { xs: "100%", sm: "48%" },
+              width:"100%",
+              maxWidth: "41rem",
             }}
           >
-            <Typography>Last Messages</Typography>
-            {"Chat"}
+            <Typography margin={"2rem 0"} variant="h4">Last Messages</Typography>
+        
+            <LineChart value={[10,42,17,57,51,36]}/>
+
           </Paper>
 
           <Paper
@@ -76,14 +79,12 @@ const Dashboard = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              width: { xs: "100%", sm: "50%" },
+              width: { xs: "100%", sm: "40%" },
               position: "relative",
-              width: "100%",
-              maxWidth: "45rem",
-              height: "25rem",
+              maxWidth: {xs:"100%",lg:"25rem"},
             }}
           >
-            {"doughnut chart"}
+            <DoughnutChart labels={["Single Chats","Group Chats"]} value={[24,57]}/>
 
             <Stack
               position={"absolute"}
@@ -108,10 +109,31 @@ const Dashboard = () => {
 };
 
 const Widget = ({ title, value, icon }) => (
-  <Paper>
+  <Paper
+    elevation={3}
+    sx={{
+      padding: "2rem",
+      margin: "2rem 0",
+      borderRadius: "1rem",
+      width: "20rem",
+    }}
+  >
     <Stack alignItems={"center"} spacing={"1rem"}>
-      <Typography>{value}</Typography>
-      <Stack>
+      <Typography
+        sx={{
+          color: "rgba(0,0,0,0.7)",
+          borderRadius: "50%",
+          border: "5px solid black",
+          width: "5rem",
+          height: "5rem",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {value}
+      </Typography>
+      <Stack direction={"row"} alignItems={"center"} spacing={1}>
         {icon}
         <Typography>{title}</Typography>
       </Stack>
