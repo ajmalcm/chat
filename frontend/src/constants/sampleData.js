@@ -77,3 +77,24 @@ export const sampleMessage=[
         createdAt:"2024-05-22T19:37:57.116Z"
     }
 ]
+
+export const dashboardData={
+    users:[
+        {
+            name:"jack",
+            avatar:"https://assets-global.website-files.com/65217fd9e31608b8b68141ba/65217fd9e31608b8b681448f_TfOzx81HiUefZZ5X5tsfZFVYrwD-wW2Uu0q6UEtKffzAjyBTzSUxWV2hauxWPy23RH9oUJwCPu_Eg7Ht9pdaf1LDQ9FZ8F4yU8shKLERpgRKRm0tZ1RYeAET6bdGKl4rHaFEHwKufm6YFHAsZmLoSQc.png",
+            _id:"1",
+            username:"jackSmoke",
+            friends:20,
+            groups:5
+        },
+        {
+            name:"smoke",
+            avatar:"https://assets-global.website-files.com/65217fd9e31608b8b68141ba/65217fd9e31608b8b681448f_TfOzx81HiUefZZ5X5tsfZFVYrwD-wW2Uu0q6UEtKffzAjyBTzSUxWV2hauxWPy23RH9oUJwCPu_Eg7Ht9pdaf1LDQ9FZ8F4yU8shKLERpgRKRm0tZ1RYeAET6bdGKl4rHaFEHwKufm6YFHAsZmLoSQc.png",
+            _id:"2",
+            username:"smokeJack",
+            friends:10,
+            groups:3
+        }
+    ]
+}
