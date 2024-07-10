@@ -1,3 +1,5 @@
-export const login=(req,res,next)=>{
+
+
+export const login=async(req,res,next)=>{
     res.json({login:"login response"})
 }
