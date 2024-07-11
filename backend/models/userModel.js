@@ -1,6 +1,7 @@
-import { model, models, Schema } from "mongoose";
+import mongoose,{ model, Schema } from "mongoose";
+import bcrypt from "bcrypt";
 
-const User=new Schema({
+const schema=new Schema({
     name:{
         type:String,
         required:[true,"name cannot be empty"],  
@@ -8,13 +9,16 @@ const User=new Schema({
     username:{
         type:String,
         required:[true,"username cannot be empty"],
-        unique:true,
+        unique:[true,"This username is already taken"],
     },
     password:{
         type:String,
         required:[true,"password cannot be empty"],
         select:false,
         minLength:[8,"password cannot be less than 8 characters"]
+    },
+    bio:{
+        type:String
     },
     avatar:{
         public_id:{
@@ -30,4 +34,12 @@ const User=new Schema({
     timestamps:true
 })
 
-module.exports=models.User || model("User",User);
+export const User=mongoose.models.User || model("User",schema);
+
+schema.pre("save",async function(next){
+    if(!this.isModified("password"))
+    {
+        next();
+    }
+    this.password=await bcrypt.hash(this.password,10);
+})
