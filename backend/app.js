@@ -17,6 +17,7 @@ app.use(express.json());
 app.use("/user",userRouter)
 
 //listener
-app.listen(3000,()=>{
+const port=process.env.PORT || 3999
+app.listen(port,()=>{
     console.log(`listening on port 3000`)
 })

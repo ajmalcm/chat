@@ -34,8 +34,6 @@ const schema=new Schema({
     timestamps:true
 })
 
-export const User=mongoose.models.User || model("User",schema);
-
 schema.pre("save",async function(next){
     if(!this.isModified("password"))
     {
@@ -43,3 +41,6 @@ schema.pre("save",async function(next){
     }
     this.password=await bcrypt.hash(this.password,10);
 })
+
+
+export const User=mongoose.models.User || model("User",schema);
