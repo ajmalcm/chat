@@ -15,5 +15,21 @@ export const registerUser=async(req,res,next)=>{
 }
 
 export const login=async(req,res,next)=>{
-    res.json({login:"login response"})
+    const {username,password}=req.body;
+
+    const user=await User.findOne({username}).select("password");
+
+    if(!user){
+        return res.status(401).json({success:false,message:"Invalid Credentials"})
+    }
+
+    const isMatch=await user.comparePassword(password);
+
+    if(!isMatch)
+    {
+        return res.status(401).json({success:false,message:"Invalid Credentials"});
+    }
+
+    sendToken(res,user,200,"Login successfull.");
+
 }

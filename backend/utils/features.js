@@ -25,5 +25,5 @@ export const connectDB = (uri) => {
 export const sendToken = (res, user, status, message) => {
   const accessToken = jwt.sign({ _id: user._id }, jwtSecret);
 
-  return res.status(status).cookie("accessToken", accessToken, cookieOptions).json({success:true,accessToken,message})
+  return res.status(status).cookie("realtime-accessToken", accessToken, cookieOptions).json({success:true,accessToken,message})
 };
