@@ -3,6 +3,7 @@ import userRouter from "./routes/userRoutes.js"
 import { connectDB } from "./utils/features.js";
 import dotenv from "dotenv"
 import { errorMiddleware } from "./middlewares/error.js";
+import cookieParser from "cookie-parser";
 const app=express();
 dotenv.config();
 const uri=process.env.CONNECTION_URI
@@ -12,6 +13,7 @@ connectDB(uri);
 
 //middlewares
 app.use(express.json());
+app.use(cookieParser())
 
 
 //routes
