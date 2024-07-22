@@ -1,13 +1,11 @@
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken"
-import { TryCatch } from "./error.js";
 import { ErrorHandler } from "../utils/utility.js";
-import { User } from "../models/userModel.js";
 
 dotenv.config();
 
 const jwt_secret=process.env.JWT_SECRET;
-const isAuthenticatedUser=TryCatch(async(req,res,next)=>{
+const isAuthenticatedUser=(req,res,next)=>{
 
     const {realtime_accessToken}=req.cookies;
 
@@ -17,9 +15,9 @@ const isAuthenticatedUser=TryCatch(async(req,res,next)=>{
     }
 
     const decodedData=jwt.verify(realtime_accessToken,jwt_secret)
-    req.user=await User.findById(decodedData._id)
+    req.user= decodedData._id;
     next();
 
-})
+}
 
 export {isAuthenticatedUser}

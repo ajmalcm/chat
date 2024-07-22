@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 dotenv.config();
 
 const jwtSecret = process.env.JWT_SECRET;
-const cookieOptions = {
+export const cookieOptions = {
   maxAge: 5 * 24 * 60 * 60 * 1000,
   httpOnly: true,
   secure: true,

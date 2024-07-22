@@ -1,6 +1,6 @@
 import { TryCatch } from "../middlewares/error.js";
 import {User} from "../models/userModel.js"
-import { sendToken } from "../utils/features.js";
+import { cookieOptions, sendToken } from "../utils/features.js";
 import { ErrorHandler } from "../utils/utility.js";
 
 export const registerUser=async(req,res,next)=>{
@@ -38,6 +38,14 @@ export const login=TryCatch(async(req,res,next)=>{
 
 })
 
-export const getUserProfile=(req,res,next)=>{
-    res.status(200).json({success:true,user:"yes me"})
-}
+export const getUserProfile=TryCatch(async(req,res,next)=>{
+    const user=await User.findById(req.user);
+
+    res.status(200).json({success:true,user})
+
+})
+
+export const logoutUser=TryCatch(async(req,res,next)=>{
+
+    res.status(200).cookie("realtime_accessToken","",{...cookieOptions,maxAge:0}).json({success:true,message:"logout Sucessfull."});
+})
