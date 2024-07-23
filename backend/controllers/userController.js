@@ -22,7 +22,6 @@ export const login=TryCatch(async(req,res,next)=>{
     const user=await User.findOne({username}).select("password");
 
     if(!user){
-        // return res.status(401).json({success:false,message:"Invalid Credentials"})
         return next(new ErrorHandler("Invalid Credentials.",404))
     }
 
@@ -30,7 +29,6 @@ export const login=TryCatch(async(req,res,next)=>{
 
     if(!isMatch)
     {
-        // return res.status(401).json({success:false,message:"Invalid Credentials"});
         return next(new ErrorHandler("Invalid Credentials.",404));
     }
 
@@ -46,6 +44,17 @@ export const getUserProfile=TryCatch(async(req,res,next)=>{
 })
 
 export const logoutUser=TryCatch(async(req,res,next)=>{
-
     res.status(200).cookie("realtime_accessToken","",{...cookieOptions,maxAge:0}).json({success:true,message:"logout Sucessfull."});
+})
+
+export const searchUser=TryCatch(async(req,res,next)=>{
+    const {name}=req.query;
+
+    // const userFound=await User.findOne({username:username});
+    // if(!userFound){
+    //     return next(new ErrorHandler("No user found with this userName.",404));
+    // }
+
+    res.status(200).json({success:true,message:name});
+
 })

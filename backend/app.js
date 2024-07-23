@@ -1,5 +1,6 @@
 import express from "express"
 import userRouter from "./routes/userRoutes.js"
+import chatRouter from "./routes/chatRoutes.js"
 import { connectDB } from "./utils/features.js";
 import dotenv from "dotenv"
 import { errorMiddleware } from "./middlewares/error.js";
@@ -18,6 +19,7 @@ app.use(cookieParser())
 
 //routes
 app.use("/user",userRouter)
+app.use("/chat",chatRouter)
 
 app.use(errorMiddleware);
 
