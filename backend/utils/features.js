@@ -27,3 +27,8 @@ export const sendToken = (res, user, status, message) => {
 
   return res.status(status).cookie("realtime_accessToken", accessToken, cookieOptions).json({success:true,accessToken,message})
 };
+
+
+export const emitEvent=(req,event,users,data)=>{
+  console.log("emitting event.",event)
+}
