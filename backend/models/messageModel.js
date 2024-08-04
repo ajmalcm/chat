@@ -1,6 +1,6 @@
-import { Schema,models,model, Types } from "mongoose";
+import mongoose, { Schema,model, Types } from "mongoose";
 
-const Message=new Schema({
+const schema=new Schema({
     content:String,
     attachments:[
         {
@@ -30,4 +30,4 @@ const Message=new Schema({
     timestamps:true
 });
 
-module.exports=models.Message || model("Message",Message);
+export const Message=mongoose.models.Message || model("Message",schema);
