@@ -1,4 +1,5 @@
 import { TryCatch } from "../middlewares/error.js";
+import { Chat } from "../models/chatModel.js";
 import {User} from "../models/userModel.js"
 import { cookieOptions, sendToken } from "../utils/features.js";
 import { ErrorHandler } from "../utils/utility.js";
@@ -50,11 +51,13 @@ export const logoutUser=TryCatch(async(req,res,next)=>{
 export const searchUser=TryCatch(async(req,res,next)=>{
     const {name}=req.query;
 
-    // const userFound=await User.findOne({username:username});
-    // if(!userFound){
-    //     return next(new ErrorHandler("No user found with this userName.",404));
-    // }
+    const myChats=await Chat.find({groupChat:false,members:req.user})
+    
+    //all users from my chat meaning friends or people i have chatted with
+    const allUsersFromMyChats=myChats.flatMap((chat)=>chat.members)
 
-    res.status(200).json({success:true,message:name});
+    const allUsersExceptMeAndFriends=await User.find({_id:{$nin:allUsersFromMyChats}})
+
+    res.status(200).json({success:true,allUsersExceptMeAndFriends});
 
 })
