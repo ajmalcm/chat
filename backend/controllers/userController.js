@@ -1,8 +1,10 @@
 import { TryCatch } from "../middlewares/error.js";
 import { Chat } from "../models/chatModel.js";
 import {User} from "../models/userModel.js"
-import { cookieOptions, sendToken } from "../utils/features.js";
+import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
 import { ErrorHandler } from "../utils/utility.js";
+import {Request} from "../models/requestModel.js";
+import { NEW_REQUEST } from "../constants/events.js";
 
 export const registerUser=async(req,res,next)=>{
     const {name,username,password,bio}=req.body;
@@ -56,8 +58,34 @@ export const searchUser=TryCatch(async(req,res,next)=>{
     //all users from my chat meaning friends or people i have chatted with
     const allUsersFromMyChats=myChats.flatMap((chat)=>chat.members)
 
-    const allUsersExceptMeAndFriends=await User.find({_id:{$nin:allUsersFromMyChats}})
+    const allUsersExceptMeAndFriends=await User.find({ _id : { $nin : allUsersFromMyChats },name:{$regex: name,$options:"i"}})
+    const users=allUsersExceptMeAndFriends.map(({_id,name,avatar})=>({
+        _id,
+        name,
+        avatar:avatar.url
+    }))
 
-    res.status(200).json({success:true,allUsersExceptMeAndFriends});
+    res.status(200).json({success:true,users});
+})
+
+export const sendFriendRequest=TryCatch(async(req,res,next)=>{
+
+    const {userId}=req.body;
+
+    const request=await Request.findOne({})
+
+    if(request) return next(new ErrorHandler("Request already sent",400));
+
+    await Request.create({
+        sender:req.user,
+        reciever:userId
+    })
+
+    emitEvent(req,NEW_REQUEST,[userId],"request");
+
+    return res.status(200).json({
+        success:true,
+        message:"Friend request sent."
+    })
 
 })

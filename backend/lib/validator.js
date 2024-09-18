@@ -52,10 +52,14 @@ const chatIdValidator=()=>[
 ]
 
 const renameGroupValidator=()=>[
-    param("name","Please Provide name").notEmpty(),
+    body("name","Please Provide name").notEmpty(),
     param("id","Please enter Chat ID").notEmpty()
+]
+
+const sendRequestValidator=()=>[
+    body("userId","Please enter userId").notEmpty()
 ]
 
 
 
-export {registerValidator,validateHandler,loginValidator,newGroupChatValidator,addMemberValidator,removeMemberValidator,sendAttachmentsValidator,chatIdValidator,renameGroupValidator};
+export {registerValidator,validateHandler,loginValidator,newGroupChatValidator,addMemberValidator,removeMemberValidator,sendAttachmentsValidator,chatIdValidator,renameGroupValidator,sendRequestValidator};
