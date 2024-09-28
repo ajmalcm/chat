@@ -60,6 +60,11 @@ const sendRequestValidator=()=>[
     body("userId","Please enter userId").notEmpty()
 ]
 
+const acceptRequestValidator=()=>[
+    body("requestId","Please enter requestId").notEmpty(),
+    body("accept").notEmpty().withMessage("Please add Accept").isBoolean().withMessage("Accept must be a boolean")
+]
 
 
-export {registerValidator,validateHandler,loginValidator,newGroupChatValidator,addMemberValidator,removeMemberValidator,sendAttachmentsValidator,chatIdValidator,renameGroupValidator,sendRequestValidator};
+
+export {registerValidator,validateHandler,loginValidator,newGroupChatValidator,addMemberValidator,removeMemberValidator,sendAttachmentsValidator,chatIdValidator,renameGroupValidator,sendRequestValidator,acceptRequestValidator};

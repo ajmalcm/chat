@@ -1,8 +1,8 @@
 import express from "express";
-import { getUserProfile, login,logoutUser,registerUser, searchUser, sendFriendRequest } from "../controllers/userController.js";
+import { acceptFriendRequest, getAllNotifications, getMyFriends, getUserProfile, login,logoutUser,registerUser, searchUser, sendFriendRequest } from "../controllers/userController.js";
 import { singleAvatar } from "../middlewares/multer.js";
 import { isAuthenticatedUser } from "../middlewares/auth.js";
-import { loginValidator, registerValidator, sendRequestValidator, validateHandler } from "../lib/validator.js";
+import { acceptRequestValidator, loginValidator, registerValidator, sendRequestValidator, validateHandler } from "../lib/validator.js";
 
 const router=express.Router();
 
@@ -16,7 +16,11 @@ router.use(isAuthenticatedUser);
 router.get("/me",getUserProfile)
 router.delete("/logout",logoutUser);
 router.get("/search",searchUser)
-router.get("/sendrequest",sendRequestValidator(),validateHandler,sendFriendRequest)
+router.put("/sendrequest",sendRequestValidator(),validateHandler,sendFriendRequest);
+router.put("/acceptrequest",acceptRequestValidator(),validateHandler,acceptFriendRequest);
+router.get("/notifications",getAllNotifications)
+router.get("/friends",getMyFriends);
+
 
 
 export default router
