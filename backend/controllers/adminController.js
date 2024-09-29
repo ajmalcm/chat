@@ -1,8 +1,45 @@
+import { adminSecretKey } from "../app.js";
 import { TryCatch } from "../middlewares/error.js";
 import { Chat } from "../models/chatModel.js";
 import { Message } from "../models/messageModel.js";
 import { User } from "../models/userModel.js";
+import { cookieOptions } from "../utils/features.js";
+import { ErrorHandler } from "../utils/utility.js";
+import jwt from "jsonwebtoken"
 
+
+export const adminLogin=TryCatch(async(req,res,next)=>{
+    const {secretKey}=req.body;
+
+    const isMatched=secretKey===adminSecretKey;
+
+    if(!isMatched)
+    {
+        return next(new ErrorHandler("Invalid admin Key",401))
+    }
+
+    const token=jwt.sign(secretKey,process.env.JWT_SECRET);
+
+    return res.status(200).cookie("realtime_admin_accessToken",token,{...cookieOptions,maxAge:1000*60*15}).json({
+        success:true,
+        message:"Authenticated successfully. Welcome BOSS"
+    })  //for 15 minutes
+
+})
+
+export const adminLogout=TryCatch(async(req,res,next)=>{
+    return res.status(200).cookie("realtime_admin_accessToken","",{...cookieOptions,maxAge:0}).json({
+        success:true,
+        message:"Logged Out successfully"
+    })  
+
+})
+
+export const getAdminData=TryCatch(async(req,res,next)=>{
+    return res.status(200).json({
+        admin:true,
+    })
+})
 
 export const allUsers=TryCatch(async(req,res,next)=>{
 

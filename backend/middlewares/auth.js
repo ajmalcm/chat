@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken"
 import { ErrorHandler } from "../utils/utility.js";
+import { adminSecretKey } from "../app.js";
 
 dotenv.config();
 
@@ -20,4 +21,26 @@ const isAuthenticatedUser=(req,res,next)=>{
 
 }
 
-export {isAuthenticatedUser}
+const adminOnly=(req,res,next)=>{
+
+    const {realtime_admin_accessToken}=req.cookies;
+
+    if(!realtime_admin_accessToken)
+    {
+       return next(new ErrorHandler("Only admin can access this route",401))
+    }
+
+    const secretKey=jwt.verify(realtime_admin_accessToken,jwt_secret)
+
+    const isMatched=secretKey===adminSecretKey;
+
+    if(!isMatched)
+        {
+           return next(new ErrorHandler("Only admin can access this route",401))
+        }
+
+    next();
+
+}
+
+export {isAuthenticatedUser,adminOnly}
