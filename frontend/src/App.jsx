@@ -1,7 +1,10 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/styled/auth/ProtectedRoute";
 import LayoutLoader from "./components/layout/Loaders";
+import axios from "axios";
+import { server } from "./constants/config";
+
 const Home = lazy(() => import("./pages/Home")); //we use lazy function for dynmaic routing which is loaded only when its needed
 const Login = lazy(() => import("./pages/Login"));
 const Chat = lazy(() => import("./pages/Chat"));
@@ -17,6 +20,13 @@ const MessageManagement=lazy(()=>import("./pages/admin/MessageManagement"));
 let user = true;
 
 const App = () => {
+
+  useEffect(()=>{
+    axios.get(`${server}/api/v1/user/me`).
+    then((res)=>console.log(res)).
+    catch((err)=>console.log(err))
+  },[])
+
   return (
     <Router>
       <Suspense fallback={<LayoutLoader />}>

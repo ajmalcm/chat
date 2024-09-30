@@ -12,6 +12,7 @@ import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
 import {v4 as uuid} from "uuid";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/messageModel.js";
+import cors from "cors"
 
 const app=express();
 const server=createServer(app) //for socket setup
@@ -28,13 +29,17 @@ connectDB(uri);
 
 //middlewares
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
+app.use(cors({
+    origin:"http://localhost:5173/",
+    credentials:true
+}));
 
 
 //routes
-app.use("/user",userRouter)
-app.use("/chat",chatRouter)
-app.use("/admin",adminRouter)
+app.use("/api/v1/user",userRouter)
+app.use("/api/v1/chat",chatRouter)
+app.use("/api/v1/admin",adminRouter)
 
 //socket connection middleware
 io.use((socket,next)=>{
