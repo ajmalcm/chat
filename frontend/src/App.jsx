@@ -1,9 +1,11 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/styled/auth/ProtectedRoute";
 import LayoutLoader from "./components/layout/Loaders";
 import axios from "axios";
 import { server } from "./constants/config";
+import {useDispatch, useSelector} from "react-redux";
+import { userNotExists } from "./redux/reducers/auth";
 
 const Home = lazy(() => import("./pages/Home")); //we use lazy function for dynmaic routing which is loaded only when its needed
 const Login = lazy(() => import("./pages/Login"));
@@ -17,17 +19,21 @@ const ChatManagement=lazy(()=>import("./pages/admin/ChatManagement"));
 const MessageManagement=lazy(()=>import("./pages/admin/MessageManagement"));
 
 
-let user = true;
+
 
 const App = () => {
+
+  const {user,loading}=useSelector(state=>state.auth);
+
+  const dispatch=useDispatch();
 
   useEffect(()=>{
     axios.get(`${server}/api/v1/user/me`).
     then((res)=>console.log(res)).
-    catch((err)=>console.log(err))
-  },[])
+    catch((err)=>dispatch(userNotExists()));
+  },[dispatch])
 
-  return (
+  return loading ? <LayoutLoader/>: (
     <Router>
       <Suspense fallback={<LayoutLoader />}>
         <Routes>

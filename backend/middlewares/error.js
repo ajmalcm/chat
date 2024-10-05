@@ -11,8 +11,6 @@ const errorMiddleware=(err,req,res,next)=>{
         err.statusCode=400;
     }
 
-    console.log(envMode === "DEVELOPMENT")
-
     if(err.name==="CastError")
     {
         const errorPath=err.path;
