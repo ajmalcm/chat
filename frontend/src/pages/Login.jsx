@@ -5,9 +5,15 @@ import {isValidUsername, useFileHandler, useInputValidation} from "6pp";
 import { useState } from "react";
 import VisualyHidden from "../components/styled/StyledComponents";
 import { userNameValidator } from "../utils/Validation";
+import axios from "axios";
+import {server} from "../constants/config";
+import { useDispatch } from "react-redux";
+import { userExists } from "../redux/reducers/auth";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [isLogin, setisLogin] = useState(true);
+  const dispatch=useDispatch();
 
   const name=useInputValidation("");
   const password=useInputValidation(); 
@@ -16,12 +22,48 @@ const Login = () => {
   const avatar=useFileHandler("single");
 
 
- const loginHandler=(e)=>{
-  e.preventDefault();
+ const loginHandler=async (e)=>{
+   e.preventDefault();
+  try {
+    const config={
+      withCredentials:true,
+      headers:{
+        "Content-Type":"application/json"
+      }
+    }
+   const {data}= await axios.post(`${server}/api/v1/user/login`,{username:userName.value,password:password.value},config);
+   dispatch(userExists(true));
+   toast.success(data?.message)
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Something went wrong.");
+  }
+
  }
 
- const registerHandler=(e)=>{
+ const registerHandler=async (e)=>{
   e.preventDefault();
+  const formData=new FormData();
+  formData.append("avatar",avatar.file);
+  formData.append("name",name.value);
+  formData.append("bio",bio.value);
+  formData.append("username",userName.value);
+  formData.append("password",password.value);
+
+  const config={
+    withCredentials:true,
+    headers:{
+      "Content-Type":"multipart/form-data"
+    }
+  }
+
+  try {
+    const {data}=await axios.post(`${server}/api/v1/user/register`,formData,config);
+    dispatch(userExists(true))
+    toast.success(data?.message)
+  } catch (error) {
+    toast.error(error.response.data.message)
+  }
+
  }
 
 

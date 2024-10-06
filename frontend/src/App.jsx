@@ -6,6 +6,7 @@ import axios from "axios";
 import { server } from "./constants/config";
 import {useDispatch, useSelector} from "react-redux";
 import { userNotExists } from "./redux/reducers/auth";
+import {Toaster} from "react-hot-toast"
 
 const Home = lazy(() => import("./pages/Home")); //we use lazy function for dynmaic routing which is loaded only when its needed
 const Login = lazy(() => import("./pages/Login"));
@@ -17,9 +18,6 @@ const Dashboard=lazy(()=>import("./pages/admin/Dashboard"));
 const UserManagement=lazy(()=>import("./pages/admin/UserManagement"));
 const ChatManagement=lazy(()=>import("./pages/admin/ChatManagement"));
 const MessageManagement=lazy(()=>import("./pages/admin/MessageManagement"));
-
-
-
 
 const App = () => {
 
@@ -61,6 +59,7 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
+      <Toaster position="bottom-center"/>
     </Router>
   );
 };

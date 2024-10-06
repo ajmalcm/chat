@@ -7,11 +7,11 @@ import { acceptRequestValidator, loginValidator, registerValidator, sendRequestV
 const router=express.Router();
 
 router.post("/register",singleAvatar,registerValidator(),validateHandler,registerUser);
-router.get("/login",loginValidator(),validateHandler,login);
+router.post("/login",loginValidator(),validateHandler,login);
 
 
-//everyRoute after this will have this middleware applied
 router.use(isAuthenticatedUser);
+//everyRoute after this will have this middleware applied
 
 router.get("/me",getUserProfile)
 router.delete("/logout",logoutUser);
