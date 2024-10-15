@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import { v2 as cloudinary } from "cloudinary";
+import { v4 as uuid } from "uuid";
+import { getBase64 } from "../lib/helper.js";
 dotenv.config();
 
 const jwtSecret = process.env.JWT_SECRET;
@@ -26,6 +29,39 @@ export const sendToken = (res, user, status, message) => {
   const accessToken = jwt.sign({ _id: user._id }, jwtSecret);
 
   return res.status(status).cookie("realtime_accessToken", accessToken, cookieOptions).json({success:true,accessToken,message})
+};
+
+export const uploadFilesToCloudinary = async (files = []) => {
+  const uploadPromises = files.map((file) => {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.upload(
+        getBase64(file),
+        {
+          folder:"realtime",
+          resource_type: "auto",
+          public_id: uuid(),
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        }
+      );
+    });
+  });
+
+  try {
+    const results = await Promise.all(uploadPromises);
+    console.log(results);
+    const formattedResults = results.map((result) => ({
+      public_id: result.public_id,
+      url: result.secure_url,
+    }));
+    console.log(formattedResults);
+    return formattedResults;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Error uploading files to cloudinary", err);
+  }
 };
 
 export const deleteFilesFromCloudinary=async(public_ids)=>{

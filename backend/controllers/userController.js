@@ -1,7 +1,7 @@
 import { TryCatch } from "../middlewares/error.js";
 import { Chat } from "../models/chatModel.js";
 import {User} from "../models/userModel.js"
-import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
+import { cookieOptions, emitEvent, sendToken, uploadFilesToCloudinary } from "../utils/features.js";
 import { ErrorHandler } from "../utils/utility.js";
 import {Request} from "../models/requestModel.js";
 import { NEW_REQUEST, REFETCH_CHAT } from "../constants/events.js";
@@ -17,9 +17,11 @@ export const registerUser=TryCatch(async(req,res,next)=>{
         return next(new ErrorHandler("Please Upload avatar"));
     }
 
+    const result=await uploadFilesToCloudinary([file]);
+
     const avatar={
-        public_id:"rando",
-        url:"randourl"
+        public_id:result[0].public_id,
+        url:result[0].url
     }
 
     const user=await User.create({name,username,password,bio,avatar});

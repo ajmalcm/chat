@@ -13,6 +13,7 @@ import {v4 as uuid} from "uuid";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/messageModel.js";
 import cors from "cors"
+import {v2 as cloudinary} from "cloudinary";
 
 const app=express();
 const server=createServer(app) //for socket setup
@@ -26,6 +27,14 @@ export const userSocketIDs=new Map();
 
 //dbconnection
 connectDB(uri);
+
+//cloudinary setup
+cloudinary.config({
+    cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
+    api_key:process.env.CLOUDINARY_API_KEY,
+    api_secret:process.env.CLOUDINARY_API_SECRET
+})
+
 
 //middlewares
 app.use(express.json());
