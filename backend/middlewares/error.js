@@ -17,8 +17,8 @@ const errorMiddleware=(err,req,res,next)=>{
         err.message=`Invalid format of ${errorPath}`;
         err.statusCode=400;
     }
-
-    return res.status(err.statusCode).json({success:false,message:envMode==="DEVELOPMENT"?err:err.message});
+    console.log(err);
+    return res.status(err.statusCode).json({success:false,message:envMode==="DEVELOPMENT"?err.message:err.message});
 }
 
 const TryCatch=(passedFunction)=>async(req,res,next)=>{

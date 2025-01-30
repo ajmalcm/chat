@@ -7,10 +7,11 @@ import React,{Suspense,lazy, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { setIsMobile } from "../../redux/reducers/misc";
+import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
   const navigate=useNavigate();
-  const [isMobile,setIsMobile]=useState(false);
   const [isSearch,setIsSearch]=useState(false);
   const [isNewGroup,setIsNewGroup]=useState(false);
   const [isNotification,setIsNotification]=useState(false);
@@ -19,9 +20,12 @@ const Header = () => {
   const SearchDialog=lazy(()=>import("../../specific/Search"));
   const NewGroup=lazy(()=>import("../../specific/NewGroup"));
 
+  const {isMobile}=useSelector(state=>state.misc);
+  const dispatch=useDispatch();
+
 
   const handleMobile=()=>{
-    setIsMobile(prev=>!prev)
+    dispatch(setIsMobile(true));
   }
 
   const openSearch=()=>{

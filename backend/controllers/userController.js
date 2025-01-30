@@ -7,27 +7,30 @@ import {Request} from "../models/requestModel.js";
 import { NEW_REQUEST, REFETCH_CHAT } from "../constants/events.js";
 import { getOtherMember } from "../lib/helper.js";
 
-export const registerUser=TryCatch(async(req,res,next)=>{
-    const {name,username,password,bio}=req.body;
-
-    const file=req.file;
-
-    if(!file)
-    {
-        return next(new ErrorHandler("Please Upload avatar"));
-    }
-
-    const result=await uploadFilesToCloudinary([file]);
-
-    const avatar={
-        public_id:result[0].public_id,
-        url:result[0].url
-    }
-
-    const user=await User.create({name,username,password,bio,avatar});
-
-    sendToken(res,user,201,"User created successfully");
-})
+export const registerUser=TryCatch(async (req, res, next) => {
+    const { name, username, password, bio } = req.body;
+  
+    const file = req.file;
+  
+    if (!file) return next(new ErrorHandler("Please Upload Avatar"));
+  
+    const result = await uploadFilesToCloudinary([file]);
+  
+    const avatar = {
+      public_id: result[0].public_id,
+      url: result[0].url,
+    };
+  
+    const user = await User.create({
+      name,
+      bio,
+      username,
+      password,
+      avatar,
+    });
+  
+    sendToken(res, user, 201, "User created");
+  });
 
 export const login=TryCatch(async(req,res,next)=>{
     const {username,password}=req.body;

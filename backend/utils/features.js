@@ -37,7 +37,6 @@ export const uploadFilesToCloudinary = async (files = []) => {
       cloudinary.uploader.upload(
         getBase64(file),
         {
-          folder:"realtime",
           resource_type: "auto",
           public_id: uuid(),
         },
@@ -48,7 +47,7 @@ export const uploadFilesToCloudinary = async (files = []) => {
       );
     });
   });
-
+  console.log(uploadPromises);
   try {
     const results = await Promise.all(uploadPromises);
     console.log(results);
@@ -56,13 +55,14 @@ export const uploadFilesToCloudinary = async (files = []) => {
       public_id: result.public_id,
       url: result.secure_url,
     }));
-    console.log(formattedResults);
     return formattedResults;
   } catch (err) {
-    console.log(err);
+    console.log(err)
     throw new Error("Error uploading files to cloudinary", err);
   }
 };
+
+ 
 
 export const deleteFilesFromCloudinary=async(public_ids)=>{
   

@@ -18,7 +18,9 @@ import {v2 as cloudinary} from "cloudinary";
 const app=express();
 const server=createServer(app) //for socket setup
 const io=new Server(server,{}); //for socket setup
-dotenv.config();
+dotenv.config({
+    path:"./.env"
+});
 const uri=process.env.CONNECTION_URI
 export const adminSecretKey=process.env.ADMIN_SECRET_KEY || "shdcdljcsdknc";
 export const envMode=process.env.NODE_ENV.trim() || "PRODUCTION";
@@ -35,12 +37,17 @@ cloudinary.config({
     api_secret:process.env.CLOUDINARY_API_SECRET
 })
 
-
+console.log({
+    cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
+    api_key:process.env.CLOUDINARY_API_KEY,
+    api_secret:process.env.CLOUDINARY_API_SECRET
+})
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
     origin:["http://localhost:5173","http://localhost:4173",process.env.CLIENT_URL],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials:true
 }));
 
@@ -112,7 +119,12 @@ io.on("connection",(socket)=>{
 app.use(errorMiddleware);
 
 //listener
-const port=process.env.PORT || 3999
-server.listen(port,()=>{      //when connecting to socket make sure to connect to the http Server
-    console.log(`listening on port ${port} in ${envMode} mode`)
-})
+try{
+    const port=process.env.PORT || 3999
+    server.listen(port,()=>{      //when connecting to socket make sure to connect to the http Server
+        console.log(`listening on port ${port} in ${envMode} mode`)
+    })
+}catch(error)
+{
+    console.log(error)
+}
