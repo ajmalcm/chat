@@ -5,7 +5,7 @@ import LayoutLoader from "./components/layout/Loaders";
 import axios from "axios";
 import { server } from "./constants/config";
 import {useDispatch, useSelector} from "react-redux";
-import { userNotExists } from "./redux/reducers/auth";
+import { userExists, userNotExists } from "./redux/reducers/auth";
 import {Toaster} from "react-hot-toast"
 
 const Home = lazy(() => import("./pages/Home")); //we use lazy function for dynmaic routing which is loaded only when its needed
@@ -26,8 +26,8 @@ const App = () => {
   const dispatch=useDispatch();
 
   useEffect(()=>{
-    axios.get(`${server}/api/v1/user/me`).
-    then((res)=>console.log(res)).
+    axios.get(`${server}/api/v1/user/me`,{withCredentials:true}).
+    then(({data})=>dispatch(userExists(data.user))).
     catch((err)=>dispatch(userNotExists()));
   },[dispatch])
 

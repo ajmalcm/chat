@@ -7,12 +7,12 @@ import React,{Suspense,lazy, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { setIsMobile } from "../../redux/reducers/misc";
+import { setIsMobile, setIsSearch } from "../../redux/reducers/misc";
 import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
   const navigate=useNavigate();
-  const [isSearch,setIsSearch]=useState(false);
+  // const [isSearch,setIsSearch]=useState(false);
   const [isNewGroup,setIsNewGroup]=useState(false);
   const [isNotification,setIsNotification]=useState(false);
 
@@ -20,7 +20,7 @@ const Header = () => {
   const SearchDialog=lazy(()=>import("../../specific/Search"));
   const NewGroup=lazy(()=>import("../../specific/NewGroup"));
 
-  const {isMobile}=useSelector(state=>state.misc);
+  const {isMobile,isSearch}=useSelector(state=>state.misc);
   const dispatch=useDispatch();
 
 
@@ -29,7 +29,7 @@ const Header = () => {
   }
 
   const openSearch=()=>{
-    setIsSearch(prev=>!prev)
+    dispatch(setIsSearch(true))
   }
 
   const openNewGroup=()=>{
@@ -44,7 +44,7 @@ const Header = () => {
 
   const navigateToGroup=()=>{
     console.log("groups")
-    navigate("/groups")
+    navigate("/groups") 
   }
 
   const logOutHandler=()=>{
@@ -105,7 +105,7 @@ const Header = () => {
     {
       isSearch&&(
         <Suspense fallback={<Backdrop open/>}>
-          <SearchDialog/>
+          <SearchDialog isSearch={isSearch} handleSearchClose={()=>dispatch(setIsSearch(false))}/>
         </Suspense>
       )
     }

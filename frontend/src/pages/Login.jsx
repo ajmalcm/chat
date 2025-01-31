@@ -32,7 +32,7 @@ const Login = () => {
       }
     }
    const {data}= await axios.post(`${server}/api/v1/user/login`,{username:userName.value,password:password.value},config);
-   dispatch(userExists(true));
+   dispatch(userExists(data?.user));
    toast.success(data?.message)
   } catch (error) {
     toast.error(error?.response?.data?.message || "Something went wrong.");

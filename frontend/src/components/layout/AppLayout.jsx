@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./Header";
 import Title from "../shared/Title";
 import { Drawer, Grid, Skeleton } from "@mui/material";
@@ -9,6 +9,8 @@ import Profile from "../../specific/Profile";
 import { useMyChatsQuery } from "../../redux/api/api";
 import { useSelector,useDispatch } from "react-redux";
 import { setIsMobile } from "../../redux/reducers/misc";
+import toast from "react-hot-toast";
+import { useErrors } from "../../../hooks/hook";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -27,6 +29,8 @@ const AppLayout = () => (WrappedComponent) => {
     const handleMobileClose=()=>{
       dispatch(setIsMobile(false))
     }
+
+    useErrors([{isError,error}])
 
     return (
       <>
