@@ -16,7 +16,7 @@ const api=createApi({
         // invalidateTags:["Chat"]  //for refetching
         searchUser:builder.query({
             query:(name)=>({
-                url:`user/search?${name}`,
+                url:`user/search?name=${name || ""}`,
                 credentials:"include",
             }),
             providesTags:["User"]

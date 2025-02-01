@@ -4,11 +4,18 @@ import FaceIcon from "@mui/icons-material/Face";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import moment from "moment";
+import { useSelector } from "react-redux";
+import { transformImage } from "../lib/features";
 
 const Profile = () => {
+
+  const { user } = useSelector((state) => state.auth);
+  
   return (
     <Stack direction={"column"} spacing={"2rem"} alignItems={"center"}>
       <Avatar
+      src={transformImage(user?.avatar)}
+      alt={user?.name}
         sx={{
           width: 200,
           height: 200,
@@ -17,17 +24,17 @@ const Profile = () => {
           border: "5px solid white",
         }}
       />
-      <ProfileCard text={"Bio"} heading={"realtime creator"} />
+      <ProfileCard text={"Bio"} heading={user?.bio} />
       <ProfileCard
         text={"Username"}
         icon={<AlternateEmailIcon />}
-        heading={"@realtime"}
+        heading={`@${user?.username}`}
       />
-      <ProfileCard text={"name"} icon={<FaceIcon />} heading={"jack smoke"} />
+      <ProfileCard text={"name"} icon={<FaceIcon />} heading={user?.name} />
       <ProfileCard
         text={"joined"}
         icon={<CalendarMonthIcon />}
-        heading={moment("2024-05-22T19:37:57.116Z").fromNow()}
+        heading={moment(user?.createdAt).fromNow()}
       />
     </Stack>
   );

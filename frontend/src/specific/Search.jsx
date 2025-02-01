@@ -10,25 +10,32 @@ import React, { useEffect, useState } from "react";
 import { useInputValidation } from "6pp";
 import SearchIcon from "@mui/icons-material/Search";
 import UserItem from "../components/shared/UserItem";
-import { sampleUsers } from "../constants/sampleData";
 import { useLazySearchUserQuery } from "../redux/api/api";
+import { transformImage } from "../lib/features";
 
-const Search = ({handleSearchClose,isSearch}) => {
+const Search = ({ handleSearchClose, isSearch }) => {
   const search = useInputValidation();
 
-  const [searchUser]=useLazySearchUserQuery();
+  const [searchUser] = useLazySearchUserQuery();
 
-  const [users,setUsers] = useState(sampleUsers);
-  let isLoadingFriendRequest=false;
+  const [users, setUsers] = useState([]);
+  let isLoadingFriendRequest = false;
 
-  const addFriendHandler=(id)=>{
-    console.log(id)
-  }
+  const addFriendHandler = (id) => {
+    console.log(id);
+  };
 
-  useEffect(()=>{
-    console.log(search.value)
-  },[search.value])
-  
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      searchUser(search.value)
+        .then(({ data }) => setUsers(data?.users))
+        .catch((err) => {
+          console.log(err);
+        });
+    }, 1000);
+
+    return () => clearTimeout(timeOutId);
+  }, [search.value]);
 
   return (
     <Dialog open={isSearch} onClose={handleSearchClose}>
@@ -50,10 +57,14 @@ const Search = ({handleSearchClose,isSearch}) => {
         />
 
         <List>
-            {/* if some error happens it may be becouse im not providing objeects inside the users it is a todo" */}
-          {
-            users.map((user) => (
-              <UserItem user={user} key={user._id} handler={addFriendHandler} handlerIsLoading={isLoadingFriendRequest}/>
+          {users.map((user) => (
+            <UserItem
+              user={user}
+              key={user._id}
+              avatar={transformImage(user?.avatar)}
+              handler={addFriendHandler}
+              handlerIsLoading={isLoadingFriendRequest}
+            />
           ))}
         </List>
       </Stack>
