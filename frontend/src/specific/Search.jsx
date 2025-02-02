@@ -10,19 +10,28 @@ import React, { useEffect, useState } from "react";
 import { useInputValidation } from "6pp";
 import SearchIcon from "@mui/icons-material/Search";
 import UserItem from "../components/shared/UserItem";
-import { useLazySearchUserQuery } from "../redux/api/api";
+import { useLazySearchUserQuery, useSendFriendRequestMutation } from "../redux/api/api";
 import { transformImage } from "../lib/features";
+import toast from "react-hot-toast";
 
 const Search = ({ handleSearchClose, isSearch }) => {
   const search = useInputValidation();
+  const [useFriendRequest]=useSendFriendRequestMutation();
 
   const [searchUser] = useLazySearchUserQuery();
 
   const [users, setUsers] = useState([]);
   let isLoadingFriendRequest = false;
 
-  const addFriendHandler = (id) => {
-    console.log(id);
+  const addFriendHandler = async (id) => {
+    try{
+      await useFriendRequest({userId:id});
+    }
+    catch(error)
+    {
+      console.log(error)
+      toast.error(error.data.message || "Something went wrong");
+    }
   };
 
   useEffect(() => {
