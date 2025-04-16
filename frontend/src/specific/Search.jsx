@@ -13,25 +13,18 @@ import UserItem from "../components/shared/UserItem";
 import { useLazySearchUserQuery, useSendFriendRequestMutation } from "../redux/api/api";
 import { transformImage } from "../lib/features";
 import toast from "react-hot-toast";
+import { useAsyncMutation } from "../../hooks/hook";
 
 const Search = ({ handleSearchClose, isSearch }) => {
   const search = useInputValidation();
-  const [useFriendRequest]=useSendFriendRequestMutation();
+  const [useFriendRequest,isLoadingFriendRequest]=useAsyncMutation(useSendFriendRequestMutation);
 
   const [searchUser] = useLazySearchUserQuery();
 
   const [users, setUsers] = useState([]);
-  let isLoadingFriendRequest = false;
 
   const addFriendHandler = async (id) => {
-    try{
-      await useFriendRequest({userId:id});
-    }
-    catch(error)
-    {
-      console.log(error)
-      toast.error(error.data.message || "Something went wrong");
-    }
+    await useFriendRequest("Sending friend request... ",{userId:id})
   };
 
   useEffect(() => {

@@ -16,10 +16,8 @@ const AppLayout = () => (WrappedComponent) => {
   return (props) => {
     const dispatch=useDispatch();
     const { chatId } = useParams();
-    const {isMobile}=useSelector(state=>state.misc)
+    const {isMobile}=useSelector(state=>state.misc);
     const {isLoading,data,error,isError,refetch}=useMyChatsQuery();
-
-    console.log("data",data);
 
     const handleDeleteChat = (e, _id, groupChat) => {
       e.preventDefault();
