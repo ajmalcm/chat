@@ -59,7 +59,7 @@ const AppLayout = () => (WrappedComponent) => {
             height={"100%"}
           >
           {
-            isLoading?AppLayout(
+            isLoading?(
               <Skeleton/>
             ):(
               <ChatList
