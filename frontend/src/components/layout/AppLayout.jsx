@@ -11,6 +11,7 @@ import { useSelector,useDispatch } from "react-redux";
 import { setIsMobile } from "../../redux/reducers/misc";
 import toast from "react-hot-toast";
 import { useErrors } from "../../../hooks/hook";
+import { getSocket } from "../../socket";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -18,6 +19,8 @@ const AppLayout = () => (WrappedComponent) => {
     const { chatId } = useParams();
     const {isMobile}=useSelector(state=>state.misc);
     const {isLoading,data,error,isError,refetch}=useMyChatsQuery();
+
+    const socket=getSocket();
 
     const handleDeleteChat = (e, _id, groupChat) => {
       e.preventDefault();

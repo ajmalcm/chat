@@ -14,10 +14,12 @@ import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/messageModel.js";
 import cors from "cors"
 import {v2 as cloudinary} from "cloudinary";
+import { corsConfig } from "./constants/config.js";
+import { socketAuthenticator } from "./middlewares/auth.js";
 
 const app=express();
 const server=createServer(app) //for socket setup
-const io=new Server(server,{}); //for socket setup
+const io=new Server(server,{cors:corsConfig}); //for socket setup
 dotenv.config({
     path:"./.env"
 });
@@ -45,11 +47,7 @@ console.log({
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-    origin:["http://localhost:5173","http://localhost:4173",process.env.CLIENT_URL],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials:true
-}));
+app.use(cors(corsConfig));
 
 
 //routes
@@ -59,16 +57,15 @@ app.use("/api/v1/admin",adminRouter)
 
 //socket connection middleware
 io.use((socket,next)=>{
-    
+    cookieParser()(socket.request,socket.request.res, async(err)=>{
+        await socketAuthenticator(err,socket,next);
+    })
 })
 
 //socket connection
 io.on("connection",(socket)=>{
     
-    const user={
-        _id:"ajkjak",
-        name:"hhhhd"
-    }
+    const user=socket.user;
 
     userSocketIDs.set(user._id.toString(),socket.id);
     

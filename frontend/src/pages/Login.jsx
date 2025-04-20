@@ -12,7 +12,7 @@ import { userExists } from "../redux/reducers/auth";
 import toast from "react-hot-toast";
 
 const Login = () => {
-  const [isLogin, setisLogin] = useState(true);
+  const [isLogin, setisLogin] = useState(false);
   const dispatch=useDispatch();
 
   const name=useInputValidation("");
@@ -33,9 +33,11 @@ const Login = () => {
     }
    const {data}= await axios.post(`${server}/api/v1/user/login`,{username:userName.value,password:password.value},config);
    dispatch(userExists(data?.user));
+   setisLogin(true)
    toast.success(data?.message)
   } catch (error) {
     toast.error(error?.response?.data?.message || "Something went wrong.");
+    setisLogin(false)
   }
 
  }
@@ -60,9 +62,11 @@ const Login = () => {
     const {data}=await axios.post(`${server}/api/v1/user/register`,formData,config);
     dispatch(userExists(true))
     toast.success(data?.message)
+    setisLogin(true)
   } catch (error) {
     console.log(error)
     toast.error(error.response.data.message)
+    setisLogin(false)
   }
 
  }

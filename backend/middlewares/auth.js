@@ -1,46 +1,67 @@
 import dotenv from "dotenv";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import { ErrorHandler } from "../utils/utility.js";
 import { adminSecretKey } from "../app.js";
+import { User } from "../models/userModel.js";
 
 dotenv.config();
 
-const jwt_secret=process.env.JWT_SECRET;
-const isAuthenticatedUser=(req,res,next)=>{
+const jwt_secret = process.env.JWT_SECRET;
+const isAuthenticatedUser = (req, res, next) => {
+  const { realtime_accessToken } = req.cookies;
 
-    const {realtime_accessToken}=req.cookies;
+  if (!realtime_accessToken) {
+    return next(new ErrorHandler("Please Login to access this resource.", 401));
+  }
 
-    if(!realtime_accessToken)
-    {
-       return next(new ErrorHandler("Please Login to access this resource.",401))
-    }
+  const decodedData = jwt.verify(realtime_accessToken, jwt_secret);
+  req.user = decodedData._id;
+  next();
+};
 
-    const decodedData=jwt.verify(realtime_accessToken,jwt_secret)
-    req.user= decodedData._id;
-    next();
+const adminOnly = (req, res, next) => {
+  const { realtime_admin_accessToken } = req.cookies;
 
-}
+  if (!realtime_admin_accessToken) {
+    return next(new ErrorHandler("Only admin can access this route", 401));
+  }
 
-const adminOnly=(req,res,next)=>{
+  const secretKey = jwt.verify(realtime_admin_accessToken, jwt_secret);
 
-    const {realtime_admin_accessToken}=req.cookies;
+  const isMatched = secretKey === adminSecretKey;
 
-    if(!realtime_admin_accessToken)
-    {
-       return next(new ErrorHandler("Only admin can access this route",401))
-    }
+  if (!isMatched) {
+    return next(new ErrorHandler("Only admin can access this route", 401));
+  }
 
-    const secretKey=jwt.verify(realtime_admin_accessToken,jwt_secret)
+  next();
+};
 
-    const isMatched=secretKey===adminSecretKey;
+const socketAuthenticator = async (err, socket, next) => {
+  try {
+    if (err) return next(err);
 
-    if(!isMatched)
-        {
-           return next(new ErrorHandler("Only admin can access this route",401))
-        }
+    const { realtime_accessToken } = socket.request.cookies;
 
-    next();
+    if (!realtime_accessToken)
+      return next(new ErrorHandler("Please login to access this route", 401));
 
-}
+    const decodedData = jwt.verify(
+      realtime_accessToken,
+      process.env.JWT_SECRET
+    );
 
-export {isAuthenticatedUser,adminOnly}
+    const user = await User.findById(decodedData._id);
+    if (!user)
+      return next(new ErrorHandler("Please login to access this route", 401));
+
+    socket.user = user;
+
+    return next();
+  } catch (error) {
+    console.log(error);
+    return next(new ErrorHandler("Please login to access this route", 401));
+  }
+};
+
+export { isAuthenticatedUser, adminOnly, socketAuthenticator };
