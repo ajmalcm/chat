@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import AppLayout from "../components/layout/AppLayout";
-import { IconButton, Stack } from "@mui/material";
+import { IconButton, Skeleton, Stack } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import SendIcon from "@mui/icons-material/Send";
 import { Form } from "react-router-dom";
@@ -9,20 +9,28 @@ import { FileMenu } from "../components/dialog/FileMenu";
 import { sampleMessage } from "../constants/sampleData";
 import MessageComponent from "../components/shared/MessageComponent";
 import { getSocket } from "../socket";
+import { NEW_MESSAGE } from "../constants/events";
+import { useChatDetailsQuery } from "../redux/api/api";
 
-const Chat = () => {
+const Chat = ({chatId}) => {
   const containerRef = useRef(null);
   const socket=getSocket();
 
+  const chatDetails=useChatDetailsQuery({chatId,skip:!chatId});
+  console.log(chatDetails)
+
   const [message,setMessage]=useState("");
+  let members=chatDetails?.data?.chat?.members;
+
   
   const submitHandler=(e)=>{
     e.preventDefault();
-
     if(!message.trim())
       return ;
     
-    console.log(message);
+    socket.emit(NEW_MESSAGE,{chatId,members,message})
+    setMessage("")
+
   }
 
   const user={
@@ -30,7 +38,7 @@ const Chat = () => {
     name:"sandySemicolon"
   }
 
-  return (
+  return chatDetails?.isLoading?<Skeleton/>:(
     <>
       <Stack
         ref={containerRef}

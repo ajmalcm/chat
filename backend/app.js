@@ -89,7 +89,9 @@ io.on("connection",(socket)=>{
             sender:user._id,
             chat:chatId
         }
+        
         const membersSocket=getSockets(members); //to send message to whom
+
         io.to(membersSocket).emit(NEW_MESSAGE, {
             chatId,
             message:messageForRealTime
