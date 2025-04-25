@@ -11,13 +11,17 @@ import { NEW_MESSAGE } from "../constants/events";
 import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { useErrors, useSocketEvents } from "../../hooks/hook";
 import {useInfiniteScrollTop} from "6pp"
+import { useDispatch } from "react-redux";
+import { setIsFileMenu } from "../redux/reducers/misc";
 
 const Chat = ({chatId,user}) => {
   const containerRef = useRef(null);
+  const dispatch=useDispatch();
   const socket=getSocket();
   const [messages,setMessages]=useState([]);
   const [message,setMessage]=useState("");
   const [page,setPage]=useState(1);
+  const [fileMenuAnchor,setFileMenuAnchor]=useState(null);
 
   const chatDetails=useChatDetailsQuery({chatId,skip:!chatId});
   const oldMessagesChunk=useGetMessagesQuery({chatId,page})
@@ -27,7 +31,12 @@ const Chat = ({chatId,user}) => {
   const errors=[{isError:chatDetails.isError,error:chatDetails.error},{isError:oldMessagesChunk.isError,error:oldMessagesChunk.error}]
 
   let members=chatDetails?.data?.chat?.members;
-  console.log("oldMessagesChunk",oldMessagesChunk.data)
+  console.log("oldMessagesChunk",oldMessagesChunk.data);
+
+  const handleFileOpen=(e)=>{
+    dispatch(setIsFileMenu(true));
+    setFileMenuAnchor(e.currentTarget);
+  }
 
   
   const submitHandler=(e)=>{
@@ -93,6 +102,7 @@ const Chat = ({chatId,user}) => {
               left: "1rem",
               rotate: "30deg",
             }}
+            onClick={handleFileOpen}
           >
             <AttachFileIcon />
           </IconButton>
@@ -105,7 +115,7 @@ const Chat = ({chatId,user}) => {
         </Stack>
       </form>
 
-            <FileMenu/>
+            <FileMenu anchorE1={fileMenuAnchor} chatId={chatId}/>
 
     </>
   );

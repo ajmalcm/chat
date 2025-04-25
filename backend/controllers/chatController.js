@@ -1,7 +1,7 @@
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chatModel.js";
-import { deleteFilesFromCloudinary, emitEvent } from "../utils/features.js";
+import { deleteFilesFromCloudinary, emitEvent, uploadFilesToCloudinary } from "../utils/features.js";
 import {
   ALERT,
   NEW_ATTACHMENT,
@@ -236,7 +236,7 @@ export const sendAttachments = TryCatch(async (req, res, next) => {
 
   //upload files here
 
-  const attachments = [];
+  const attachments = await uploadFilesToCloudinary(files); //4:05
 
   const messageForDB = { content: "", attachments, sender: me._id, chat:chatId };
 

@@ -13,7 +13,13 @@ const fileFormat=(url="")=>{
     return 'file'
 }
 
-const transformImage=(url="",width=100)=>url;
+const transformImage=(url="",width=100)=>{
+    // https://res.cloudinary.com/dzarpwrze/image/upload/dpr_auto/w_200/v1731519129/a94ecfd3-46ae-4bb1-bf5c-ea57cd46170f.jpg
+
+    const newUrl=url.replace("upload/",`upload/dpr_auto/w_${width}/`)
+
+    return newUrl;
+};
 
 const getLast7Days=()=>{
 
