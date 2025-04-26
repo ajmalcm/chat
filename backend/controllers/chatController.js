@@ -5,6 +5,7 @@ import { deleteFilesFromCloudinary, emitEvent, uploadFilesToCloudinary } from ".
 import {
   ALERT,
   NEW_ATTACHMENT,
+  NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
   REFETCH_CHAT,
 } from "../constants/events.js";
@@ -251,7 +252,7 @@ export const sendAttachments = TryCatch(async (req, res, next) => {
 
   const message=await Message.create(messageForDB);
 
-  emitEvent(req, NEW_ATTACHMENT, chat.members, {
+  emitEvent(req, NEW_MESSAGE, chat.members, {
     message: messageForRealTime,
     chatId,
   });

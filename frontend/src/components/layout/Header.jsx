@@ -1,4 +1,4 @@
-import { AppBar, Backdrop, Box, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
+import { AppBar, Backdrop, Badge, Box, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from '@mui/icons-material/Add';
@@ -9,6 +9,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { setIsMobile, setIsNotification, setIsSearch } from "../../redux/reducers/misc";
 import { useDispatch, useSelector } from "react-redux";
+import { resetNotification } from "../../redux/reducers/chat";
 
 const Header = () => {
   const navigate=useNavigate();
@@ -19,6 +20,8 @@ const Header = () => {
   const NewGroup=lazy(()=>import("../../specific/NewGroup"));
 
   const {isMobile,isSearch,isNotification}=useSelector(state=>state.misc);
+  const {notificationCount}=useSelector(state=>state.chat);
+
   const dispatch=useDispatch();
 
 
@@ -37,6 +40,7 @@ const Header = () => {
 
   const openNotification=()=>{
     dispatch(setIsNotification(true))
+    dispatch(resetNotification())
   }
 
 
@@ -88,6 +92,7 @@ const Header = () => {
               title="Notifications"
               icon={<NotificationsIcon/>}
               handler={openNotification}
+              value={notificationCount}
             />
             <IconBtn
               title="Logout"
@@ -129,11 +134,13 @@ const Header = () => {
   );
 };
 
-const IconBtn=({title,icon,handler})=>{
+const IconBtn=({title,icon,handler,value})=>{
   return(
     <Tooltip title={title}>
     <IconButton onClick={handler} size="large" color="inherit">
-      {icon}
+    {
+      value?<Badge badgeContent={value} color="error">{icon}</Badge>:icon
+    }
     </IconButton>
     </Tooltip>
   )

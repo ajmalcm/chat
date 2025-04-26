@@ -39,6 +39,8 @@ cloudinary.config({
     api_secret:process.env.CLOUDINARY_API_SECRET
 })
 
+app.set("io",io) //to access io in other files
+
 //middlewares
 app.use(express.json());
 app.use(cookieParser());

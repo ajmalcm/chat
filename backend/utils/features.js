@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 import { v4 as uuid } from "uuid";
-import { getBase64 } from "../lib/helper.js";
+import { getBase64, getSockets } from "../lib/helper.js";
 dotenv.config();
 
 const jwtSecret = process.env.JWT_SECRET;
@@ -70,5 +70,9 @@ export const deleteFilesFromCloudinary=async(public_ids)=>{
 
 
 export const emitEvent=(req,event,users,data)=>{
+  const io=req.app.get("io");
+  const userSocket=getSockets(users);
+
+  io.to(userSocket).emit(event, data);
   console.log("emitting event.",event)
 }
