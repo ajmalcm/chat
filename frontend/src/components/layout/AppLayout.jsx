@@ -13,7 +13,8 @@ import toast from "react-hot-toast";
 import { useErrors, useSocketEvents } from "../../../hooks/hook";
 import { getSocket } from "../../socket";
 import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../../constants/events";
-import { incrementNotification } from "../../redux/reducers/chat";
+import { incrementNotification, setNewMessagesAlert } from "../../redux/reducers/chat";
+import { getorSaveFromStorage } from "../../lib/features";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -21,7 +22,13 @@ const AppLayout = () => (WrappedComponent) => {
     const { chatId } = useParams();
     const {isMobile}=useSelector(state=>state.misc);
     const {user}=useSelector(state=>state.auth);
+    const {newMessagesAlert}=useSelector(state=>state.chat);
+
     const {isLoading,data,error,isError,refetch}=useMyChatsQuery();
+
+    useEffect(()=>{
+      getorSaveFromStorage({key:NEW_MESSAGE_ALERT,value:newMessagesAlert})
+    },[newMessagesAlert])
 
     const socket=getSocket();
 
@@ -34,9 +41,10 @@ const AppLayout = () => (WrappedComponent) => {
       dispatch(setIsMobile(false))
     }
 
-    const newMessageAlerthandler=useCallback(()=>{
-
-    },[])
+    const newMessageAlerthandler=useCallback((data)=>{
+      if(data.chatId===chatId) return;
+      dispatch(setNewMessagesAlert(data))
+    },[chatId])
 
     const newRequesthandler=useCallback(()=>{
       dispatch(incrementNotification())
@@ -61,7 +69,7 @@ const AppLayout = () => (WrappedComponent) => {
               w='70vw'
               chats={data?.chats}
               chatId={chatId}
-              newMessagesAlert={[{ chatId, count: 4 }]}
+              newMessagesAlert={newMessagesAlert}
               onlineUsers={["1", "2"]}
               handleDeleteChat={handleDeleteChat}
               />
@@ -83,9 +91,9 @@ const AppLayout = () => (WrappedComponent) => {
               <ChatList
               chats={data?.chats}
               chatId={chatId}
-              newMessagesAlert={[{ chatId, count: 4 }]}
               onlineUsers={["1", "2"]}
               handleDeleteChat={handleDeleteChat}
+              newMessagesAlert={newMessagesAlert}
             />
             )
           }
