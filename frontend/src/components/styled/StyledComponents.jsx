@@ -1,4 +1,4 @@
-import { styled } from "@mui/material";
+import { keyframes, Skeleton, styled } from "@mui/material";
 import { Link as LinkComponent } from "react-router-dom";
 
 const VisualyHidden = styled("input")({
@@ -55,5 +55,15 @@ export const CurveButton=styled("button")({
     backgroundColor:"rgba(0,0,0,0.8)"
   }
 })
+
+const bouncingAnimations=keyframes`
+0% {transform:scale(1)}
+50% {transform:scale(1.5)}
+100% {transform:scale(1)}
+`;
+
+export const BouncingSkeleton=styled(Skeleton)(()=>({
+animation:`${bouncingAnimations} 1s infinite`,
+}))
 
 export default VisualyHidden;

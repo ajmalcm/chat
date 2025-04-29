@@ -7,13 +7,14 @@ import { InputBox } from "../components/styled/StyledComponents";
 import { FileMenu } from "../components/dialog/FileMenu";
 import MessageComponent from "../components/shared/MessageComponent";
 import { getSocket } from "../socket";
-import { NEW_MESSAGE, START_TYPING } from "../constants/events.js";
+import { ALERT, NEW_MESSAGE, START_TYPING, STOP_TYPING } from "../constants/events.js";
 import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { useErrors, useSocketEvents } from "../../hooks/hook";
 import { useInfiniteScrollTop } from "6pp";
 import { useDispatch } from "react-redux";
 import { setIsFileMenu } from "../redux/reducers/misc";
 import { removeNewMessagesAlert } from "../redux/reducers/chat";
+import { TypingLoader } from "../components/layout/Loaders.jsx";
 
 const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
@@ -23,6 +24,12 @@ const Chat = ({ chatId, user }) => {
   const [message, setMessage] = useState("");
   const [page, setPage] = useState(1);
   const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
+  const [iamTyping, setIamTyping] = useState(false);
+  const [userTyping, setUserTyping] = useState(false);
+  const typingTimeout = useRef(null);
+  const bottomRef=useRef(null)
+
+  console.log("userTyping", userTyping);
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   const oldMessagesChunk = useGetMessagesQuery({ chatId, page });
@@ -58,8 +65,19 @@ const Chat = ({ chatId, user }) => {
 
   const messageOnChangeHandler =(e)=>{
     setMessage(e.target.value); 
-    socket.emit(START_TYPING, { members,chatId });
+    if(!iamTyping)
+    {
+      socket.emit(START_TYPING, { members,chatId });
+      setIamTyping(true);
+    }
     // console.log("typing", { members, chatId });
+    if(typingTimeout.current) clearTimeout(typingTimeout.current);  
+
+    typingTimeout.current=setTimeout(()=>{
+      socket.emit(STOP_TYPING, { members,chatId });
+      setIamTyping(false);
+    },[2000])
+
   }
 
   useEffect(() => {
@@ -74,18 +92,42 @@ const Chat = ({ chatId, user }) => {
     };
   }, [chatId]);
 
+  useEffect(()=>{
+    if(bottomRef.current)
+    {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  },[messages])
+
   const newMessageListener = useCallback((data) => {
     if (data.chatId !== chatId) return;
     setMessages((prev) => [...prev, data?.message]);
   }, [chatId]);
 
   const startTypingListener = useCallback((data) => {
-    console.log("am i hitting")
     if (data.chatId !== chatId) return;
-    console.log("typing", data);
+    setUserTyping(true);
   }, [chatId]);
 
-  const eventHandlers = { [NEW_MESSAGE]: newMessageListener, [START_TYPING]:startTypingListener };
+  const stopTypingListener = useCallback((data) => {
+    if (data.chatId !== chatId) return; //condition to check if the typeIndicator/alert is for the intended chatId and not for any other chatId
+    setUserTyping(false);
+  },[chatId]);
+
+  const alertListener = useCallback((content) => {
+    const messageForAlert={
+                content,
+                sender:{
+                    _id:"fvfvfv",
+                    name:"admin"
+                },
+                chat:chatId,
+                createdAt:new Date().toISOString()
+            }
+            setMessages((prev) => [...prev, messageForAlert]);
+  },[chatId]);
+
+  const eventHandlers = { [NEW_MESSAGE]: newMessageListener, [START_TYPING]:startTypingListener,[STOP_TYPING]:stopTypingListener,[ALERT]:alertListener };
 
   useSocketEvents(socket, eventHandlers);
 
@@ -112,6 +154,9 @@ const Chat = ({ chatId, user }) => {
         {allMessages.map((i, index) => (
           <MessageComponent message={i} user={user} key={index} />
         ))}
+
+        {userTyping && (<TypingLoader/>)}
+        <div ref={bottomRef}/>
       </Stack>
       <form
         style={{
@@ -146,6 +191,10 @@ const Chat = ({ chatId, user }) => {
           <IconButton type="submit">
             <SendIcon />
           </IconButton>
+
+
+         
+
         </Stack>
       </form>
 

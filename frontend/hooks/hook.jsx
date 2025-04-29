@@ -51,7 +51,6 @@ export const useAsyncMutation=(mutationHook)=>{
 export const useSocketEvents = (socket, handlers) => {
   useEffect(() => {
     Object.entries(handlers).forEach(([event, handler]) => {
-      console.log("Registering event:", event, handler);
       socket.on(event, handler);
     });
 

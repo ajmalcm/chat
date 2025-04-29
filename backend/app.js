@@ -8,7 +8,7 @@ import { errorMiddleware } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import {createServer} from "http";
-import { NEW_MESSAGE, NEW_MESSAGE_ALERT, START_TYPING } from "./constants/events.js";
+import { NEW_MESSAGE, NEW_MESSAGE_ALERT, START_TYPING, STOP_TYPING } from "./constants/events.js";
 import {v4 as uuid} from "uuid";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/messageModel.js";
@@ -108,11 +108,15 @@ io.on("connection",(socket)=>{
 
     socket.on(START_TYPING,({members,chatId})=>{
         const membersSocket=getSockets(members); //to send message to whom
-        // console.log("typing",{members,chatId}) 
+        console.log("start-typing",{members,chatId}) 
         socket.to(membersSocket).emit(START_TYPING,{chatId})
     })
 
-
+    socket.on(STOP_TYPING,({members,chatId})=>{
+        const membersSocket=getSockets(members); //to send message to whom
+        console.log("stop-typing",{members,chatId}) 
+        socket.to(membersSocket).emit(STOP_TYPING,{chatId})
+    })
 
     socket.on("disconnect",()=>{
         console.log("User disconnected");

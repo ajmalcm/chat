@@ -1,5 +1,6 @@
 import { Grid, Skeleton, Stack } from '@mui/material';
 import React from 'react'
+import { BouncingSkeleton } from '../styled/StyledComponents';
 
 const LayoutLoader = () => {
   return (
@@ -20,3 +21,20 @@ const LayoutLoader = () => {
 }
 
 export default LayoutLoader;
+
+export const TypingLoader=()=>{
+return (
+  <Stack
+  spacing={"0.5rem"}
+  direction={"row"}
+  justifyContent={"center"}
+  padding={"0.5rem"}
+  >
+    <BouncingSkeleton variant='circular' width={15} height={15} style={{animationDelay:'0.1s'}}/>
+    <BouncingSkeleton variant='circular' width={15} height={15} style={{animationDelay:'0.2s'}}/>
+    <BouncingSkeleton variant='circular' width={15} height={15} style={{animationDelay:'0.4s'}}/>
+    <BouncingSkeleton variant='circular' width={15} height={15} style={{animationDelay:'0.6s'}}/>
+
+  </Stack>
+)  
+}

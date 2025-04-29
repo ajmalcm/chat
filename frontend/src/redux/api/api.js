@@ -74,10 +74,38 @@ const api=createApi({
                 body:data,
                 credentials:"include"
             })
+        }),
+        myGroups:builder.query({
+            query:(data)=>({
+                url:"chat/my/groups",
+                credentials:"include"
+            }),
+            providesTags:["Chat"]
+        }),
+        availableFriends:builder.query({
+            query:(chatId)=>{
+                let url="user/friends";
+                if(chatId)
+                    url+=`?chatId=${chatId}`
+                return {
+                    url,
+                    credentials:"include"
+                }
+            },
+            providesTags:["Chat"]
+        }),
+        newGroup:builder.mutation({
+            query:({name,members})=>({
+                url:"chat/new",
+                method:"POST",
+                credentials:"include",
+                body:{name,members}
+            }),
+            invalidatesTags:["Chat"]
         })
     })
 
 });
 
 export default api;
-export const {useMyChatsQuery,useLazySearchUserQuery,useSendFriendRequestMutation,useGetNotificationsQuery,useAcceptFriendRequestMutation,useChatDetailsQuery,useGetMessagesQuery,useSendAttachMentsMutation}=api;
+export const {useMyChatsQuery,useLazySearchUserQuery,useSendFriendRequestMutation,useGetNotificationsQuery,useAcceptFriendRequestMutation,useChatDetailsQuery,useGetMessagesQuery,useSendAttachMentsMutation,useMyGroupsQuery,useAvailableFriendsQuery,useNewGroupMutation}=api;

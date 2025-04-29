@@ -7,19 +7,18 @@ import React,{Suspense,lazy, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { setIsMobile, setIsNotification, setIsSearch } from "../../redux/reducers/misc";
+import { setIsMobile, setIsNewGroup, setIsNotification, setIsSearch } from "../../redux/reducers/misc";
 import { useDispatch, useSelector } from "react-redux";
 import { resetNotification } from "../../redux/reducers/chat";
 
 const Header = () => {
   const navigate=useNavigate();
-  const [isNewGroup,setIsNewGroup]=useState(false);
 
   const Notifications=lazy(()=>import("../../specific/Notifications"));
   const SearchDialog=lazy(()=>import("../../specific/Search"));
   const NewGroup=lazy(()=>import("../../specific/NewGroup"));
 
-  const {isMobile,isSearch,isNotification}=useSelector(state=>state.misc);
+  const {isMobile,isSearch,isNotification,isNewGroup}=useSelector(state=>state.misc);
   const {notificationCount}=useSelector(state=>state.chat);
 
   const dispatch=useDispatch();
@@ -34,7 +33,7 @@ const Header = () => {
   }
 
   const openNewGroup=()=>{
-    setIsNewGroup(prev=>!prev)
+    dispatch(setIsNewGroup(true));
     
   }
 
