@@ -18,7 +18,6 @@ const NewGroup = () => {
 
   const {isError,error,isLoading,data}=useAvailableFriendsQuery();
   const [newGroup,isLoadingnewGroup]=useAsyncMutation(useNewGroupMutation);
-  console.log("data",data)
 
   const errors=[{isError,error}];
   useErrors(errors);
