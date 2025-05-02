@@ -12,7 +12,7 @@ import { setIsMobile } from "../../redux/reducers/misc";
 import toast from "react-hot-toast";
 import { useErrors, useSocketEvents } from "../../../hooks/hook";
 import { getSocket } from "../../socket";
-import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../../constants/events";
+import { NEW_MESSAGE_ALERT, NEW_REQUEST, REFETCH_CHAT } from "../../constants/events";
 import { incrementNotification, setNewMessagesAlert } from "../../redux/reducers/chat";
 import { getorSaveFromStorage } from "../../lib/features";
 
@@ -41,16 +41,21 @@ const AppLayout = () => (WrappedComponent) => {
       dispatch(setIsMobile(false))
     }
 
-    const newMessageAlerthandler=useCallback((data)=>{
+    const newMessageAlertListener=useCallback((data)=>{
       if(data.chatId===chatId) return;
       dispatch(setNewMessagesAlert(data))
     },[chatId])
 
-    const newRequesthandler=useCallback(()=>{
+    const newRequestListener=useCallback(()=>{
       dispatch(incrementNotification())
     },[dispatch])
 
-    const eventHandlers={[NEW_MESSAGE_ALERT]:newMessageAlerthandler,[NEW_REQUEST]:newRequesthandler};
+    const refetchlistener=useCallback(()=>{
+      refetch()
+    },
+    [refetch]);
+
+    const eventHandlers={[NEW_MESSAGE_ALERT]:newMessageAlertListener,[NEW_REQUEST]:newRequestListener,[REFETCH_CHAT]:refetchlistener}
     
       useSocketEvents(socket,eventHandlers);
 

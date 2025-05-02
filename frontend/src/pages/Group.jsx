@@ -11,8 +11,8 @@ import { Link } from "../components/styled/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import { sampleChats, sampleUsers } from "../constants/sampleData";
 import UserItem from "../components/shared/UserItem";
-import { useChatDetailsQuery, useMyGroupsQuery } from "../redux/api/api";
-import { useErrors } from "../../hooks/hook";
+import { useAddGroupMemberMutation, useChatDetailsQuery, useMyGroupsQuery, useRemoveGroupmemberMutation, useRenameGroupMutation } from "../redux/api/api";
+import { useAsyncMutation, useErrors } from "../../hooks/hook";
 import LayoutLoader from "../components/layout/Loaders";
 
 const Group = () => {
@@ -31,7 +31,11 @@ const Group = () => {
 
   const myGroups=useMyGroupsQuery();
   const groupDetails=useChatDetailsQuery({chatId,populate:true},{skip:!chatId});
-  console.log(groupDetails?.data)
+
+  const [renameGroup,isLoadingRenameGroup]=useAsyncMutation(useRenameGroupMutation);
+  const [removeMember,isLoadingRemovemember]=useAsyncMutation(useRemoveGroupmemberMutation);
+  const [addMembers,isLoadingAddmembers]=useAsyncMutation(useAddGroupMemberMutation);
+
 
   const errors=[{isError:myGroups.isError,error:myGroups.error},{isError:groupDetails.isError,error:groupDetails.error}];
   useErrors(errors);
@@ -67,7 +71,7 @@ const Group = () => {
   
   const updateGroupName=()=>{
     setIsEdit(false);
-    console.log(groupNameUpdatedValue)
+    renameGroup("Updating group name...",{chatId,name:groupNameUpdatedValue})
   }
 
   const openConfirmDeleteHandler=()=>{
@@ -94,8 +98,8 @@ const Group = () => {
   useEffect(()=>{
     if(chatId)
       {
-        setGroupName(`Group Name ${chatId}`)
-        setGroupNameUpdatedValue(`Group updated name ${chatId}`);
+        // setGroupName(`Group Name ${chatId}`)
+        // setGroupNameUpdatedValue(`Group updated name ${chatId}`);
       }
 
 
@@ -165,7 +169,7 @@ const Group = () => {
     <Stack direction={"row"} alignItems={"center"} justifyContent={"center"} spacing={"1rem"}>
       {isEdit?<>
         <TextField value={groupNameUpdatedValue} onChange={e=>setGroupNameUpdatedValue(e.target.value)}/>
-        <IconButton onClick={updateGroupName}>
+        <IconButton onClick={updateGroupName} disabled={isLoadingRenameGroup}>
           <DoneIcon/>
         </IconButton>
       </>:<>
