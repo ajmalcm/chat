@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { setIsFileMenu } from "../redux/reducers/misc";
 import { removeNewMessagesAlert } from "../redux/reducers/chat";
 import { TypingLoader } from "../components/layout/Loaders.jsx";
+import { useNavigate } from "react-router-dom";
 
 const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
@@ -27,7 +28,8 @@ const Chat = ({ chatId, user }) => {
   const [iamTyping, setIamTyping] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
   const typingTimeout = useRef(null);
-  const bottomRef=useRef(null)
+  const bottomRef=useRef(null);
+  const navigate = useNavigate();
 
   console.log("userTyping", userTyping);
 
@@ -98,6 +100,14 @@ const Chat = ({ chatId, user }) => {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
   },[messages])
+
+  useEffect(() => {
+    if(!chatDetails.data?.chat)
+    {
+     return navigate("/");
+      
+    }
+  },[chatDetails.data])
 
   const newMessageListener = useCallback((data) => {
     if (data.chatId !== chatId) return;

@@ -122,6 +122,7 @@ export const addMembers = TryCatch(async (req, res, next) => {
   await chat.save();
 
   const allUsersName = allNewMembers.map((i) => i.name).join(",");
+  const allMembers = chat.members.map((i) => i.toString());
 
   emitEvent(
     req,
@@ -129,6 +130,8 @@ export const addMembers = TryCatch(async (req, res, next) => {
     chat.members,
     `${allUsersName} has been added to ${chat.name} group`
   );
+
+  emitEvent(req, REFETCH_CHAT, allMembers);
 
   return res.status(200).json({
     success: true,
@@ -155,6 +158,8 @@ export const removeMembers = TryCatch(async (req, res, next) => {
   if (chat.members.length <= 3)
     return next(new ErrorHandler("Group must atleast have 3 members", 400));
 
+  const allChatMembers=chat.members.map((i)=>i.toString());
+
   chat.members = chat.members.filter(
     (member) => member.toString() !== userId.toString()
   );
@@ -168,7 +173,7 @@ export const removeMembers = TryCatch(async (req, res, next) => {
     `${userToBeRemoved.name} has been removed from the group`
   );
 
-  emitEvent(req, REFETCH_CHAT, chat.members);
+  emitEvent(req, REFETCH_CHAT, allChatMembers);
 
   return res.status(200).json({
     success: true,
@@ -369,6 +374,14 @@ export const getMessages=TryCatch(async(req,res,next)=>{
     const {page=1}=req.query;
     const resultPerPage=20;
     const skip=(page-1)*resultPerPage;
+
+    const chat=await Chat.findById(chatId);
+
+    if(!chat)
+      return next(new ErrorHandler("Chat not found",404));
+
+    if(!chat.members.includes(req.user.toString()))
+        return next(new ErrorHandler("You are not allowed to access this chat",403));
 
     const [messages,totalMessagesCount]=await Promise.all([
         Message.find({chat:chatId}).

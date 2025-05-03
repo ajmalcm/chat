@@ -14,6 +14,8 @@ import UserItem from "../components/shared/UserItem";
 import { useAddGroupMemberMutation, useChatDetailsQuery, useMyGroupsQuery, useRemoveGroupmemberMutation, useRenameGroupMutation } from "../redux/api/api";
 import { useAsyncMutation, useErrors } from "../../hooks/hook";
 import LayoutLoader from "../components/layout/Loaders";
+import { useDispatch, useSelector } from "react-redux";
+import { setisAddMember } from "../redux/reducers/misc";
 
 const Group = () => {
   const [isMobileMenuOpen, setisMobileMenuOpen] = useState();
@@ -25,16 +27,16 @@ const Group = () => {
   const ConfirmDeleteDialog=lazy(()=>import ("../components/dialog/ConfirmDeleteDialog") );
   const AddMemberDialog=lazy(()=>import ("../components/dialog/AddMemberDialog") );
 
-  let isAddMember=false;
 
   const chatId=useSearchParams()[0].get("group");
 
   const myGroups=useMyGroupsQuery();
   const groupDetails=useChatDetailsQuery({chatId,populate:true},{skip:!chatId});
+  const dispatch=useDispatch();
+  const {isAddMember}=useSelector(state=>state.misc);
 
   const [renameGroup,isLoadingRenameGroup]=useAsyncMutation(useRenameGroupMutation);
   const [removeMember,isLoadingRemovemember]=useAsyncMutation(useRemoveGroupmemberMutation);
-  const [addMembers,isLoadingAddmembers]=useAsyncMutation(useAddGroupMemberMutation);
 
 
   const errors=[{isError:myGroups.isError,error:myGroups.error},{isError:groupDetails.isError,error:groupDetails.error}];
@@ -87,12 +89,13 @@ const Group = () => {
 
   }
 
-  const removeMemberHandler=(id)=>{
-    console.log(id)
+  const removeMemberHandler=(userId)=>{
+    removeMember("Removing member...",{chatId,userId})
   }
 
 
   const openAddMemberHandler=()=>{
+    dispatch(setisAddMember(true))
   }
 
   useEffect(()=>{
@@ -268,7 +271,7 @@ const Group = () => {
         {
           isAddMember &&
          <Suspense fallback={<Backdrop open/>}>
-            <AddMemberDialog/>
+            <AddMemberDialog chatId={chatId}/>
          </Suspense>
         }
 
