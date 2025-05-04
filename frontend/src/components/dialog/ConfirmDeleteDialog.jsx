@@ -10,8 +10,8 @@ const ConfirmDeleteDialog = ({open,handleClose,deleteHandler}) => {
                 Are you sure you wnat to delete this group?
             </DialogContentText>
             <DialogActions>
-            <Button>No</Button>
-            <Button color="error">Yes</Button>
+            <Button onClick={handleClose}>No</Button>
+            <Button color="error" onClick={deleteHandler}>Yes</Button>
             </DialogActions>
         </DialogContent>
     </Dialog>

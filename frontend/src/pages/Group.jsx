@@ -1,4 +1,4 @@
-import { Backdrop, Box, Button, Drawer, Grid, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, Drawer, Grid, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import React, { Suspense,lazy,memo, useEffect, useState } from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import EditIcon from '@mui/icons-material/Edit';
@@ -11,7 +11,7 @@ import { Link } from "../components/styled/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import { sampleChats, sampleUsers } from "../constants/sampleData";
 import UserItem from "../components/shared/UserItem";
-import { useAddGroupMemberMutation, useChatDetailsQuery, useMyGroupsQuery, useRemoveGroupmemberMutation, useRenameGroupMutation } from "../redux/api/api";
+import { useAddGroupMemberMutation, useChatDetailsQuery, useDeleteChatMutation, useMyGroupsQuery, useRemoveGroupmemberMutation, useRenameGroupMutation } from "../redux/api/api";
 import { useAsyncMutation, useErrors } from "../../hooks/hook";
 import LayoutLoader from "../components/layout/Loaders";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,6 +37,8 @@ const Group = () => {
 
   const [renameGroup,isLoadingRenameGroup]=useAsyncMutation(useRenameGroupMutation);
   const [removeMember,isLoadingRemovemember]=useAsyncMutation(useRemoveGroupmemberMutation);
+  const [deleteGroup,isLoadingDeleteGroup]=useAsyncMutation(useDeleteChatMutation);
+
 
 
   const errors=[{isError:myGroups.isError,error:myGroups.error},{isError:groupDetails.isError,error:groupDetails.error}];
@@ -86,7 +88,9 @@ const Group = () => {
   }
 
   const deleteHandler=()=>{
-
+    deleteGroup("Deleting group...",chatId)
+    closeConfirmDeleteHandler();
+    navigate("/groups")
   }
 
   const removeMemberHandler=(userId)=>{
@@ -126,8 +130,8 @@ const Group = () => {
     md:"1rem 4rem"
   }}
   >
-  <Button size="large" startIcon={<AddIcon/>} onClick={openConfirmDeleteHandler}>Delete Group</Button>
-  <Button size="large" variant="contained" startIcon={<DeleteIcon/>} onClick={openAddMemberHandler}>Add Member</Button>
+  <Button size="large" startIcon={<DeleteIcon/>} onClick={openConfirmDeleteHandler}>Delete Group</Button>
+  <Button size="large" variant="contained" startIcon={<AddIcon/>} onClick={openAddMemberHandler}>Add Member</Button>
   </Stack>
 
   const IconBtns = (
@@ -242,6 +246,7 @@ const Group = () => {
           {/* members */}
 
           {
+            isLoadingRemovemember?<CircularProgress/>:
             members.map((user)=>(
               <UserItem user={user} isAdded key={user._id} styling={{
                 boxShadow:"0 0 0.5rem rgba(0,0,0,0.2)",
