@@ -10,6 +10,10 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { setIsMobile, setIsNewGroup, setIsNotification, setIsSearch } from "../../redux/reducers/misc";
 import { useDispatch, useSelector } from "react-redux";
 import { resetNotification } from "../../redux/reducers/chat";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { userExists } from "../../redux/reducers/auth";
+import { server } from "../../constants/config";
 
 const Header = () => {
   const navigate=useNavigate();
@@ -44,12 +48,27 @@ const Header = () => {
 
 
   const navigateToGroup=()=>{
-    console.log("groups")
     navigate("/groups") 
   }
 
-  const logOutHandler=()=>{
-    console.log("logout")
+  const logOutHandler=async ()=>{
+
+    const config={
+      withCredentials:true,
+      headers:{
+        "Content-Type":"application/json"
+      }
+    }
+
+    try {
+      const {data}=await axios.delete(`${server}/api/v1/user/logout`,config);
+      dispatch(userExists(false))
+      toast.success(data?.message)
+    } catch (error) {
+      dispatch(userExists(true))
+      console.log(error)
+      toast.error(error.response.data.message)
+    }
   }
 
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Avatar, Button, Container, IconButton, Paper, Stack, TextField, Typography } from "@mui/material";
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import {isValidUsername, useFileHandler, useInputValidation} from "6pp";
@@ -7,13 +7,16 @@ import VisualyHidden from "../components/styled/StyledComponents";
 import { userNameValidator } from "../utils/Validation";
 import axios from "axios";
 import {server} from "../constants/config";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userExists } from "../redux/reducers/auth";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [isLogin, setisLogin] = useState(false);
+  const {user}=useSelector(state=>state.auth)
   const dispatch=useDispatch();
+  const navigate=useNavigate();
 
   const name=useInputValidation("");
   const password=useInputValidation(""); 
@@ -32,7 +35,7 @@ const Login = () => {
       }
     }
    const {data}= await axios.post(`${server}/api/v1/user/login`,{username:userName.value,password:password.value},config);
-   dispatch(userExists(data?.user));
+   dispatch(userExists(true));
    setisLogin(true)
    toast.success(data?.message)
   } catch (error) {
@@ -71,7 +74,12 @@ const Login = () => {
 
  }
 
-
+useEffect(()=>{
+  if(user)
+  {
+    navigate("/")
+  }
+},[navigate,user])
 
   return (
     <div style={{

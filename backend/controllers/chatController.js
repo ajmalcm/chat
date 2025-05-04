@@ -215,7 +215,7 @@ export const leaveGroup = TryCatch(async (req, res, next) => {
 
   return res.status(200).json({
     success: true,
-    message: `User ${user.name} has left the group`,
+    message: `Leave group successfully`,
   });
 });
 
