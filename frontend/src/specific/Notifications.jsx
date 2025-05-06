@@ -11,38 +11,30 @@ import {
 } from "@mui/material";
 import { sampleNotification } from "../constants/sampleData";
 import { useAcceptFriendRequestMutation, useGetNotificationsQuery } from "../redux/api/api";
-import { useErrors } from "../../hooks/hook";
+import { useAsyncMutation, useErrors } from "../../hooks/hook";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsNotification } from "../redux/reducers/misc";
 const Notifications = () => {
   const { isLoading, data, error, isError } = useGetNotificationsQuery();
   const {isNotification}=useSelector(state=>state.misc);
   const dispatch=useDispatch()
-  const [acceptRequest]=useAcceptFriendRequestMutation();
+  const [acceptRequest]=useAsyncMutation(useAcceptFriendRequestMutation);
 
-  useErrors([{ error, isError }]);
-
+  
   const friendRequestHandler = async({ _id, accept }) => {
-
+    
     dispatch(setIsNotification(false))
-
-    try{
-      const res=await acceptRequest({ requestId:_id, accept });
-      if(res.data?.success){
-        console.log("socket use here")
-        toast.success(res.data.message)
-      }else{
-        toast.error(res.data.error || "Something went wrong")
-      }
-    }catch(err){
-      console.log(err)
-    }
+    
+    await acceptRequest("Accepting...",{ requestId: _id, accept });
+    
   };
-
+  
   const onCloseHandler=()=>{
     dispatch(setIsNotification(false))
-
+    
   }
+  
+  useErrors([{ error, isError }]);
 
   return (
     <Dialog open={isNotification} onClose={onCloseHandler}>

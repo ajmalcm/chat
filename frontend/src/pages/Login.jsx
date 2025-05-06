@@ -35,7 +35,7 @@ const Login = () => {
       }
     }
    const {data}= await axios.post(`${server}/api/v1/user/login`,{username:userName.value,password:password.value},config);
-   dispatch(userExists(true));
+   dispatch(userExists(data.user));
    setisLogin(true)
    toast.success(data?.message)
   } catch (error) {
@@ -63,7 +63,7 @@ const Login = () => {
 
   try {
     const {data}=await axios.post(`${server}/api/v1/user/register`,formData,config);
-    dispatch(userExists(true))
+    dispatch(userExists(data.user))
     toast.success(data?.message)
     setisLogin(true)
   } catch (error) {

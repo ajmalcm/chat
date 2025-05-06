@@ -31,7 +31,6 @@ const Chat = ({ chatId, user }) => {
   const bottomRef=useRef(null);
   const navigate = useNavigate();
 
-  console.log("userTyping", userTyping);
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   const oldMessagesChunk = useGetMessagesQuery({ chatId, page });
@@ -128,9 +127,10 @@ const Chat = ({ chatId, user }) => {
     setUserTyping(false);
   },[chatId]);
 
-  const alertListener = useCallback((content) => {
+  const alertListener = useCallback((data) => {
+    if(chatId!==data.chatId) return; //condition to check if the typeIndicator/alert is for the intended chatId and not for any other chatId
     const messageForAlert={
-                content,
+                content:data.message,
                 sender:{
                     _id:"fvfvfv",
                     name:"admin"

@@ -28,7 +28,7 @@ export const connectDB = (uri) => {
 export const sendToken = (res, user, status, message) => {
   const accessToken = jwt.sign({ _id: user._id }, jwtSecret);
 
-  return res.status(status).cookie("realtime_accessToken", accessToken, cookieOptions).json({success:true,accessToken,message})
+  return res.status(status).cookie("realtime_accessToken", accessToken, cookieOptions).json({success:true,user,accessToken,message})
 };
 
 export const uploadFilesToCloudinary = async (files = []) => {
