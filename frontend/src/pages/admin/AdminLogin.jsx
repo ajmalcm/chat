@@ -1,25 +1,30 @@
 import React,{useEffect} from "react";
 import { Button, Container, Paper, TextField, Typography } from "@mui/material";
 import { useInputValidation} from "6pp";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { adminLogin, getAdmin } from "../../redux/thunks/admin";
 
 const AdminLogin = () => {
 
   const secretkey=useInputValidation("");
-  const isAdmin=false;
+  const {isAdmin}=useSelector(state=>state.auth);
+  const dispatch=useDispatch()
+
   const navigate=useNavigate();
 
- const submitHandler=()=>{
-  e.prevenetDefault();
+ const submitHandler=(e)=>{
+  e.preventDefault();
+  dispatch(adminLogin(secretkey.value)) //we wre calling like this becouse we are using createAsyncThunk in redux it can also be done normally by using axios or rtk query etc;
  }
 
  useEffect(()=>{
-  if(isAdmin)
-    {
-      navigate("/admin/dashboard")
-    }
- },[isAdmin])
+  dispatch(getAdmin());
+ },[dispatch])
 
+ if(isAdmin)
+  return <Navigate to="/admin/dashboard"/>
+  
   return (
     <div style={{
       backgroundImage:"linear-gradient(to bottom, #9600FF, #AEBAF8)"

@@ -17,6 +17,7 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import MessageIcon from "@mui/icons-material/Message";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { useSelector } from "react-redux";
 
 const Link = styled(LinkComponent)({
   textDecoration: "none",
@@ -53,7 +54,7 @@ const adminTabs = [
 
 const AdminLayout = ({ children }) => {
   const [isMobile, setIsMobile] = useState(false);
-  const isAdmin=true;
+  const {isAdmin}=useSelector(state=>state.auth);
   const navigate=useNavigate();
 
   const handleMobile = () => {
