@@ -1,5 +1,6 @@
 import {createApi,fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import { server } from '../../constants/config';
+import { getAdmin } from '../thunks/admin';
 
 const api=createApi({
     reducerPath:"api",
@@ -151,10 +152,31 @@ const api=createApi({
                 url:"admin/stats",
                 credentials:"include"
             })
-        })
+        }),
+        getAdminAllUsers:builder.query({
+            query:()=>({
+                url:"admin/users",
+                credentials:"include"
+            }),
+            invalidatesTags:["User"]
+        }),
+        getAdminAllChats:builder.query({
+            query:()=>({
+                url:"admin/chats",
+                credentials:"include"
+            }),
+            invalidatesTags:["Chat"],
+        }),
+        getAdminAllMessages:builder.query({
+            query:()=>({
+                url:"admin/messages",
+                credentials:"include"
+            }),
+            invalidatesTags:["Message"]
+        }),
     })
 
 });
 
 export default api;
-export const {useMyChatsQuery,useLazySearchUserQuery,useSendFriendRequestMutation,useGetNotificationsQuery,useAcceptFriendRequestMutation,useChatDetailsQuery,useGetMessagesQuery,useSendAttachMentsMutation,useMyGroupsQuery,useAvailableFriendsQuery,useNewGroupMutation,useRenameGroupMutation,useRemoveGroupmemberMutation,useAddGroupMemberMutation,useDeleteChatMutation,useLeaveGroupMutation,useGetAdminStatsQuery}=api;
+export const {useMyChatsQuery,useLazySearchUserQuery,useSendFriendRequestMutation,useGetNotificationsQuery,useAcceptFriendRequestMutation,useChatDetailsQuery,useGetMessagesQuery,useSendAttachMentsMutation,useMyGroupsQuery,useAvailableFriendsQuery,useNewGroupMutation,useRenameGroupMutation,useRemoveGroupmemberMutation,useAddGroupMemberMutation,useDeleteChatMutation,useLeaveGroupMutation,useGetAdminStatsQuery,useGetAdminAllUsersQuery,useGetAdminAllChatsQuery,useGetAdminAllMessagesQuery}=api;

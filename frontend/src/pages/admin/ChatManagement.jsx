@@ -1,10 +1,11 @@
-import { Avatar, Stack } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Avatar, Skeleton, Stack } from "@mui/material";
+import { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
 import AvatarCard from "../../components/shared/AvatarCard";
 import Table from "../../components/shared/Table";
-import { dashboardData } from "../../constants/sampleData";
 import { transformImage } from "../../lib/features";
+import { useGetAdminAllChatsQuery } from "../../redux/api/api";
+import { useErrors } from "../../../hooks/hook";
 
 const columns = [
   {
@@ -25,6 +26,12 @@ const columns = [
     headerName: "Name",
     headerClassName: "table-header",
     width: 300,
+  },
+  {
+    field: "groupChat",
+    headerName: "Group",
+    headerClassName: "table-header",
+    width: 100,
   },
   {
     field: "totalMembers",
@@ -63,25 +70,36 @@ const columns = [
 
 const ChatManagement = () => {
   const [rows, setRows] = useState([]);
+  
+  const {isLoading,isError,error,data}=useGetAdminAllChatsQuery();
 
   useEffect(() => {
-    setRows(
-      dashboardData.chats.map((i) => ({
-        ...i,
-        id: i._id,
-        avatar: i.avatar.map((i) => transformImage(i, 50)),
-        members: i.members.map((i) => transformImage(i.avatar, 50)),
-        creator: {
-          name: i.creator.name,
-          avatar: transformImage(i.creator.avatar, 50),
-        },
-      }))
-    );
-  }, []);
+    if(data)
+    {
+      setRows(
+        data?.chats.map((i) => ({
+          ...i,
+          id: i._id,
+          avatar: i.avatar.map((i) => transformImage(i, 50)),
+          members: i.members.map((i) => transformImage(i.avatar, 50)),
+          groupChat: i.groupChat ? "Yes" : "No",
+          creator: {
+            name: i.creator.name,
+            avatar: transformImage(i.creator.avatar, 50),
+          },
+        }))
+      );
+    }
+  }, [data]);
+
+  useErrors([{isError,error}]);
 
   return (
     <AdminLayout>
+    {
+      isLoading ?<Skeleton height={"100vh"}/>:
       <Table heading={"All Chats"} columns={columns} rows={rows} />
+    }
     </AdminLayout>
   );
 };

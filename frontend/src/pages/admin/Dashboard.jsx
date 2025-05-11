@@ -1,25 +1,22 @@
-import React from "react";
-import AdminLayout from "../../components/layout/AdminLayout";
-import { Box, Container, Paper, Stack, Typography } from "@mui/material";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
+import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import { Box, Container, Paper, Skeleton, Stack, Typography } from "@mui/material";
+import moment from "moment";
+import { useErrors } from "../../../hooks/hook";
+import AdminLayout from "../../components/layout/AdminLayout";
 import {
   CurveButton,
   SearchField,
 } from "../../components/styled/StyledComponents";
-import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
-import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
-import moment from "moment";
-import { DoughnutChart, LineChart } from "../../specific/Charts";
 import { useGetAdminStatsQuery } from "../../redux/api/api";
-import LayoutLoader from "../../components/layout/Loaders";
-import { useErrors } from "../../../hooks/hook";
+import { DoughnutChart, LineChart } from "../../specific/Charts";
 
 const Dashboard = () => {
 
   const {data,isLoading,isError,error}=useGetAdminStatsQuery();
-  console.log(data)
   const {stats}=data || {};
 
   useErrors([{isError,error}]);
@@ -60,8 +57,10 @@ const Dashboard = () => {
     </Stack>
   );
 
-  return isLoading?<LayoutLoader/>:(
+  return (
     <AdminLayout>
+    {
+      isLoading?<Skeleton height={"100vh"}/>:
       <Container component={"main"}>
         {Appbar}
         <Stack direction={{xs:"column",lg:"row"}} sx={{gap:"2rem"}} flexWrap={"wrap"} justifyContent={"center"} alignItems={{xs:"center",lg:"stretch"}}>
@@ -114,6 +113,7 @@ const Dashboard = () => {
 
         {widgets}
       </Container>
+    }
     </AdminLayout>
   );
 };
