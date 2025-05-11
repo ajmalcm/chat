@@ -17,7 +17,8 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import MessageIcon from "@mui/icons-material/Message";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { adminLogout } from "../../redux/thunks/admin";
 
 const Link = styled(LinkComponent)({
   textDecoration: "none",
@@ -57,6 +58,8 @@ const AdminLayout = ({ children }) => {
   const {isAdmin}=useSelector(state=>state.auth);
   const navigate=useNavigate();
 
+  
+  
   const handleMobile = () => {
     setIsMobile(!isMobile);
   };
@@ -115,8 +118,11 @@ const AdminLayout = ({ children }) => {
 
 const Sidebar = ({ w = "100%" }) => {
   const location = useLocation();
+  const dispatch=useDispatch();
 
-  const logoutHandler = () => {};
+  const logoutHandler = () => {
+    dispatch(adminLogout())
+  };
 
   return (
     <Stack width={w} direction={"column"} p={"3rem"} spacing={"3rem"}>

@@ -12,8 +12,18 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
 import moment from "moment";
 import { DoughnutChart, LineChart } from "../../specific/Charts";
+import { useGetAdminStatsQuery } from "../../redux/api/api";
+import LayoutLoader from "../../components/layout/Loaders";
+import { useErrors } from "../../../hooks/hook";
 
 const Dashboard = () => {
+
+  const {data,isLoading,isError,error}=useGetAdminStatsQuery();
+  console.log(data)
+  const {stats}=data || {};
+
+  useErrors([{isError,error}]);
+
   const Appbar = (
     <Paper
       elevation={"3"}
@@ -44,13 +54,13 @@ const Dashboard = () => {
       alignItems={"center"}
       margin={"2rem 0"}
     >
-      <Widget title={"Users"} value={20} icon={<PersonOutlinedIcon />} />
-      <Widget title={"Chats"} value={10} icon={<GroupOutlinedIcon />} />
-      <Widget title={"Messages"} value={200} icon={<MessageOutlinedIcon />} />
+      <Widget title={"Users"} value={stats?.usersCount} icon={<PersonOutlinedIcon />} />
+      <Widget title={"Chats"} value={stats?.totalChatsCount} icon={<GroupOutlinedIcon />} />
+      <Widget title={"Messages"} value={stats?.messagesCount} icon={<MessageOutlinedIcon />} />
     </Stack>
   );
 
-  return (
+  return isLoading?<LayoutLoader/>:(
     <AdminLayout>
       <Container component={"main"}>
         {Appbar}
@@ -67,7 +77,7 @@ const Dashboard = () => {
           >
             <Typography margin={"2rem 0"} variant="h4">Last Messages</Typography>
         
-            <LineChart value={[10,42,17,57,51,36]}/>
+            <LineChart value={stats?.messagesChart || []}/>
 
           </Paper>
 
@@ -84,7 +94,7 @@ const Dashboard = () => {
               maxWidth: {xs:"100%",lg:"25rem"},
             }}
           >
-            <DoughnutChart labels={["Single Chats","Group Chats"]} value={[24,57]}/>
+            <DoughnutChart labels={["Single Chats","Group Chats"]} value={[stats?.totalChatsCount - stats?.groupsCount || 0,stats?.groupsCount || 0]}/>
 
             <Stack
               position={"absolute"}

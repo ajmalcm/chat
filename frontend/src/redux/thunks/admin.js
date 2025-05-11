@@ -34,6 +34,21 @@ const getAdmin=createAsyncThunk("admin/getAdmin",async()=>{
 
 })
 
+const adminLogout=createAsyncThunk("admin/adminLogout",async()=>{
+    try{const config={
+        withCredentials:true,
+    }
+    const {data}=await axios.get(`${server}/api/v1/admin/logout`,config);
+
+    return data.message; 
+}
+    catch(error)
+    {
+        throw error.response.data.message;
+    }
+
+})
 
 
-export {adminLogin,getAdmin};
+
+export {adminLogin,getAdmin,adminLogout};

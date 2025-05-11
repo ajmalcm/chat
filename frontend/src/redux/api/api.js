@@ -146,9 +146,15 @@ const api=createApi({
             }),
             invalidatesTags:["Chat"]
         }),
+        getAdminStats:builder.query({
+            query:()=>({
+                url:"admin/stats",
+                credentials:"include"
+            })
+        })
     })
 
 });
 
 export default api;
-export const {useMyChatsQuery,useLazySearchUserQuery,useSendFriendRequestMutation,useGetNotificationsQuery,useAcceptFriendRequestMutation,useChatDetailsQuery,useGetMessagesQuery,useSendAttachMentsMutation,useMyGroupsQuery,useAvailableFriendsQuery,useNewGroupMutation,useRenameGroupMutation,useRemoveGroupmemberMutation,useAddGroupMemberMutation,useDeleteChatMutation,useLeaveGroupMutation}=api;
+export const {useMyChatsQuery,useLazySearchUserQuery,useSendFriendRequestMutation,useGetNotificationsQuery,useAcceptFriendRequestMutation,useChatDetailsQuery,useGetMessagesQuery,useSendAttachMentsMutation,useMyGroupsQuery,useAvailableFriendsQuery,useNewGroupMutation,useRenameGroupMutation,useRemoveGroupmemberMutation,useAddGroupMemberMutation,useDeleteChatMutation,useLeaveGroupMutation,useGetAdminStatsQuery}=api;
