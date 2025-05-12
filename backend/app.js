@@ -8,7 +8,7 @@ import { errorMiddleware } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import {createServer} from "http";
-import { NEW_MESSAGE, NEW_MESSAGE_ALERT, START_TYPING, STOP_TYPING } from "./constants/events.js";
+import { CHAT_JOINED, CHAT_LEAVED, NEW_MESSAGE, NEW_MESSAGE_ALERT, ONLINE_USERS, START_TYPING, STOP_TYPING } from "./constants/events.js";
 import {v4 as uuid} from "uuid";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/messageModel.js";
@@ -27,7 +27,7 @@ const uri=process.env.CONNECTION_URI
 export const adminSecretKey=process.env.ADMIN_SECRET_KEY || "shdcdljcsdknc";
 export const envMode=process.env.NODE_ENV.trim() || "PRODUCTION";
 export const userSocketIDs=new Map();
-
+const onlineUsers=new Set();
 
 //dbconnection
 connectDB(uri);
@@ -116,6 +116,23 @@ io.on("connection",(socket)=>{
         const membersSocket=getSockets(members); //to send message to whom
         console.log("stop-typing",{members,chatId}) 
         socket.to(membersSocket).emit(STOP_TYPING,{chatId})
+    })
+
+    socket.on(CHAT_JOINED,({userId,members})=>{
+        console.log("chat-joined",userId)
+        onlineUsers.add(userId.toString());
+
+        const membersSocket=getSockets(members); //to send message to whom
+        io.to(membersSocket).emit(ONLINE_USERS,Array.from(onlineUsers)); //to send online users to all the members of the chat
+    })
+
+    socket.on(CHAT_LEAVED,({userId,members})=>{
+        console.log("chat-leaved",userId)
+        onlineUsers.delete(userId.toString());
+
+        const membersSocket=getSockets(members); //to send message to whom
+        io.to(membersSocket).emit(ONLINE_USERS,Array.from(onlineUsers));  //getting some error here
+
     })
 
     socket.on("disconnect",()=>{
