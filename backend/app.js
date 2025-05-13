@@ -120,6 +120,7 @@ io.on("connection",(socket)=>{
 
     socket.on(CHAT_JOINED,({userId,members})=>{
         console.log("chat-joined",userId)
+        console.log("members",members);
         onlineUsers.add(userId.toString());
 
         const membersSocket=getSockets(members); //to send message to whom
@@ -127,11 +128,13 @@ io.on("connection",(socket)=>{
     })
 
     socket.on(CHAT_LEAVED,({userId,members})=>{
-        console.log("chat-leaved",userId)
+        console.log("chat-leaved",userId) 
+        console.log("members",members);
+
         onlineUsers.delete(userId.toString());
 
         const membersSocket=getSockets(members); //to send message to whom
-        io.to(membersSocket).emit(ONLINE_USERS,Array.from(onlineUsers));  //getting some error here
+        io.to(membersSocket).emit(ONLINE_USERS,Array.from(onlineUsers));  
 
     })
 

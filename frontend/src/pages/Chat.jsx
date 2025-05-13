@@ -82,7 +82,8 @@ const Chat = ({ chatId, user }) => {
   }
 
   useEffect(() => {
-    socket.emit(CHAT_JOINED,{userId:user._id,members});
+    if(members)
+    socket.emit(CHAT_JOINED,{userId:user._id, members:members});
     dispatch(removeNewMessagesAlert(chatId));
 
     return () => {
@@ -90,9 +91,10 @@ const Chat = ({ chatId, user }) => {
       setOldMessages([]);
       setPage(1);
       setMessage("");
-      socket.emit(CHAT_LEAVED,{userId:user._id,members});
+      if(members)
+      socket.emit(CHAT_LEAVED,{userId:user._id, members:members});
     };
-  }, [chatId]);
+  }, [chatId,members]);
 
   useEffect(()=>{
     if(bottomRef.current)

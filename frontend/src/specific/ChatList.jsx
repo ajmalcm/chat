@@ -21,7 +21,7 @@ handleDeleteChat
 
           const newMessageAlert=newMessagesAlert.find(({chatId})=>chatId===_id);
 
-          const isOnline=members?.some((member)=>onlineUsers.includes(_id))
+          const isOnline=members?.some((member)=>onlineUsers.includes(member))
 
            
              return (<Chatitem 
