@@ -108,19 +108,15 @@ io.on("connection",(socket)=>{
 
     socket.on(START_TYPING,({members,chatId})=>{
         const membersSocket=getSockets(members); //to send message to whom
-        console.log("start-typing",{members,chatId}) 
         socket.to(membersSocket).emit(START_TYPING,{chatId})
     })
 
     socket.on(STOP_TYPING,({members,chatId})=>{
         const membersSocket=getSockets(members); //to send message to whom
-        console.log("stop-typing",{members,chatId}) 
         socket.to(membersSocket).emit(STOP_TYPING,{chatId})
     })
 
     socket.on(CHAT_JOINED,({userId,members})=>{
-        console.log("chat-joined",userId)
-        console.log("members",members);
         onlineUsers.add(userId.toString());
 
         const membersSocket=getSockets(members); //to send message to whom
@@ -128,8 +124,6 @@ io.on("connection",(socket)=>{
     })
 
     socket.on(CHAT_LEAVED,({userId,members})=>{
-        console.log("chat-leaved",userId) 
-        console.log("members",members);
 
         onlineUsers.delete(userId.toString());
 
@@ -140,7 +134,8 @@ io.on("connection",(socket)=>{
 
     socket.on("disconnect",()=>{
         console.log("User disconnected");
-        userSocketIDs.delete(user._id.toString())
+        userSocketIDs.delete(user._id.toString());
+        onlineUsers.delete(user._id.toString());
     })
 })
 
